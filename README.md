@@ -8,8 +8,6 @@ Saral is a browser extension for people with limited digital literacy. Press the
 
 > Built for a hackathon problem statement: *AI-Powered Multilingual Voice Assistant for Digital Form Automation.*
 
-[Demo video](#) · [Landing page](#) · [Chrome Web Store](#) · [Edge Add-ons](#)
-
 ---
 
 ## Why Saral
