@@ -1,5 +1,5 @@
 import { extract } from '../lib/ai/extract';
-import { transcribe } from '../lib/ai/groq';
+import { transcribe } from '../lib/ai/sarvam';
 import { translateSchema } from '../lib/ai/translate';
 import { base64ToBlob } from '../lib/audio';
 import { AppError, toUserMessage } from '../lib/errors';
@@ -77,9 +77,12 @@ async function handleRequest(request: PanelRequest): Promise<ExtensionResponse<u
         return { ok: false, error: 'Unknown request' };
     }
   } catch (error) {
+    console.error('Request failed in background:', error);
+    const message =
+      error instanceof AppError && error.message ? error.message : toUserMessage(error);
     return {
       ok: false,
-      error: toUserMessage(error),
+      error: message,
       code: error instanceof AppError ? error.code : 'unknown',
     };
   }

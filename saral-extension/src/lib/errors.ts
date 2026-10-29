@@ -34,7 +34,13 @@ const ERROR_KEYS: Record<ErrorCode, StringKey> = {
 
 export function toUserMessage(error: unknown, language: Language = 'en'): string {
   if (error instanceof AppError) {
+    if (error.code === 'api' && error.message) {
+      return error.message;
+    }
     return t(ERROR_KEYS[error.code], language);
+  }
+  if (error instanceof Error && error.message) {
+    return error.message;
   }
   return t('errorUnknown', language);
 }
