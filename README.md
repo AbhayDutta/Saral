@@ -192,4 +192,4 @@ Add your license here (for example MIT) and a `LICENSE` file at the repo root.
 ## Team
 
 <!-- Add names and GitHub handles -->
-- Ujjwal ([@Lucid-Synth](https://github.com/Lucid-Synth))
+- ZSR
