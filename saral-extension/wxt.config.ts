@@ -1,0 +1,28 @@
+import { defineConfig } from 'wxt';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  srcDir: 'src',
+  modules: ['@wxt-dev/module-react'],
+  vite: () => ({
+    plugins: [tailwindcss()],
+  }),
+  manifest: {
+    name: 'Saral',
+    description: 'Fill Indian government and bank forms by voice.',
+    permissions: ['sidePanel', 'storage', 'activeTab', 'scripting'],
+    host_permissions: ['https://api.groq.com/*', 'https://openrouter.ai/*'],
+    action: {
+      default_title: 'Saral',
+    },
+    commands: {
+      'open-saral': {
+        suggested_key: {
+          default: 'Ctrl+Shift+S',
+          mac: 'Command+Shift+S',
+        },
+        description: 'Open the Saral side panel',
+      },
+    },
+  },
+});

@@ -1,0 +1,13 @@
+{
+  "transcript": "Mera naam Asha Rao hai. Email asha dot rao at example dot com. Mobile number 98765 43210.",
+  "values": {
+    "fullName": "Asha Rao",
+    "email": "asha.rao@example.com",
+    "phone": "9876543210"
+  },
+  "confidence": {
+    "fullName": 0.98,
+    "email": 0.94,
+    "phone": 0.96
+  }
+}
