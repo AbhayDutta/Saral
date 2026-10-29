@@ -98,17 +98,17 @@ function Options() {
             title="Connections"
             description={
               <span className="inline-flex items-start gap-1.5">
-                <Lock className="mt-0.75 h-3.5 w-3.5 shrink-0 text-ink-400" strokeWidth={1.8} />
-                Keys stay in this browser and are only sent to Groq and OpenRouter.
+                <Lock className="mt-[3px] h-3.5 w-3.5 shrink-0 text-ink-400" strokeWidth={1.8} />
+                Keys stay in this browser and are only sent to Sarvam AI and OpenRouter.
               </span>
             }
           >
-            <Row id="groq-key" label="Groq API key" hint="Used for speech-to-text.">
+            <Row id="sarvam-key" label="Sarvam AI API key" hint="Used for Saaras speech-to-text.">
               <SecretInput
-                id="groq-key"
-                value={settings.groqApiKey}
-                onChange={(value) => update({ groqApiKey: value })}
-                placeholder="gsk_…"
+                id="sarvam-key"
+                value={settings.sarvamApiKey}
+                onChange={(value) => update({ sarvamApiKey: value })}
+                placeholder="Enter your Sarvam AI API subscription key"
               />
             </Row>
             <Row
@@ -156,11 +156,16 @@ function Options() {
           </Section>
 
           <Section title="Models" description="The defaults are fine unless you want a specific model.">
-            <Row id="transcription-model" label="Transcription model">
+            <Row
+              id="transcription-model"
+              label="Transcription model"
+              hint="Sarvam AI Saaras model: saaras:v4 (recommended) or saaras:v3."
+            >
               <input
                 id="transcription-model"
                 value={settings.transcriptionModel}
                 onChange={(event) => update({ transcriptionModel: event.target.value })}
+                placeholder="saaras:v4"
                 spellCheck={false}
                 className="input-base font-mono text-[13px]"
               />
