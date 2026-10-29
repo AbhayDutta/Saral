@@ -21,8 +21,8 @@ export function Hero() {
           className="object-cover object-top opacity-60 sm:object-center"
         />
         <div className="absolute inset-0 bg-[radial-gradient(60%_45%_at_50%_0%,rgba(16,185,129,0.22),transparent_70%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black" />
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/20 to-black" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-black to-transparent" />
         <div className="hero-grain absolute inset-0" />
       </div>
 
@@ -31,7 +31,7 @@ export function Hero() {
         <a
           href="#features"
           style={step(0)}
-          className="hero-rise hero-pill group mb-9 inline-flex items-center gap-2.5 rounded-full bg-white/[0.04] py-1.5 pl-1.5 pr-3.5 text-[13px] text-zinc-300 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
+          className="hero-rise hero-pill group mb-9 inline-flex items-center gap-2.5 rounded-full bg-white/4 py-1.5 pl-1.5 pr-3.5 text-[13px] text-zinc-300 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
         >
           <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">
             Saral 1.0
@@ -106,7 +106,7 @@ export function Hero() {
               className="absolute -inset-x-10 -top-6 bottom-24 -z-10 rounded-[48px] bg-emerald-500/20 blur-3xl"
             />
             {/* The bottom of the mockup melts into the next section. */}
-            <div className="[mask-image:linear-gradient(to_bottom,black_75%,transparent)]">
+            <div className="mask-[linear-gradient(to_bottom,black_75%,transparent)]">
             </div>
           </div>
         </div>

@@ -4,11 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ------------------------------------------------------------------
-   hero.css: paste into your globals.css (Tailwind v4 project).
-   ------------------------------------------------------------------ */
-
-/* One orchestrated entrance: each element rises in sequence via --i. */
 @keyframes hero-rise {
   from {
     opacity: 0;

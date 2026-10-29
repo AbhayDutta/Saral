@@ -98,7 +98,7 @@ function Options() {
             title="Connections"
             description={
               <span className="inline-flex items-start gap-1.5">
-                <Lock className="mt-[3px] h-3.5 w-3.5 shrink-0 text-ink-400" strokeWidth={1.8} />
+                <Lock className="mt-0.75 h-3.5 w-3.5 shrink-0 text-ink-400" strokeWidth={1.8} />
                 Keys stay in this browser and are only sent to Groq and OpenRouter.
               </span>
             }
@@ -276,7 +276,7 @@ function Section({
           <p className="mt-0.5 text-[13.5px] leading-snug text-ink-500">{description}</p>
         )}
       </div>
-      <div className="card divide-y divide-ink-900/[0.06]">{children}</div>
+      <div className="card divide-y divide-ink-900/6">{children}</div>
     </section>
   );
 }
