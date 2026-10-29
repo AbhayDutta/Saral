@@ -3,7 +3,7 @@ import { ArrowRightIcon, CheckIcon, EdgeIcon } from "./Icons";
 
 export function PricingTiers() {
   return (
-    <section id="pricing" className="py-24 sm:py-32 bg-black border-t border-white/[0.08] font-sf">
+    <section id="pricing" className="py-24 sm:py-32 bg-black border-t border-white/8 font-sf">
       <div className="max-w-5xl mx-auto px-6 sm:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16 sm:mb-20">
           <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 block mb-3 font-mono">
@@ -19,13 +19,13 @@ export function PricingTiers() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Free Plan */}
-          <div className="flex h-full flex-col rounded-3xl border border-white/[0.1] bg-zinc-950 p-8 sm:p-10 transition-colors hover:border-white/[0.2]">
+          <div className="flex h-full flex-col rounded-3xl border border-white/10 bg-zinc-950 p-8 sm:p-10 transition-colors hover:border-white/20">
             <div>
               <div className="flex items-center justify-between mb-5">
                 <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">
                   Free
                 </span>
-                <span className="text-[11px] font-mono font-semibold text-zinc-300 bg-white/[0.06] px-2.5 py-0.5 rounded-full border border-white/[0.1]">
+                <span className="text-[11px] font-mono font-semibold text-zinc-300 bg-white/6 px-2.5 py-0.5 rounded-full border border-white/10">
                   Free Forever
                 </span>
               </div>
@@ -70,8 +70,8 @@ export function PricingTiers() {
             </div>
 
             <a
-              href="#install"
-              className="mt-auto w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-semibold text-white border border-white/[0.14] bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+              href="https://github.com/AbhayDutta/Saral"
+              className="mt-auto w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-semibold text-white border border-white/[0.14] bg-white/4 hover:bg-white/8 transition-colors"
             >
               <EdgeIcon className="w-4 h-4" />
               <span>Install Free</span>
@@ -79,7 +79,7 @@ export function PricingTiers() {
           </div>
 
           {/* BYOK Plan */}
-          <div className="relative flex h-full flex-col rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-emerald-950/25 via-zinc-950 to-zinc-950 p-8 sm:p-10 shadow-[0_0_60px_-20px_rgba(52,211,153,0.35)]">
+          <div className="relative flex h-full flex-col rounded-3xl border border-emerald-500/30 bg-linear-to-b from-emerald-950/25 via-zinc-950 to-zinc-950 p-8 sm:p-10 shadow-[0_0_60px_-20px_rgba(52,211,153,0.35)]">
             <div>
               <div className="flex items-center justify-between mb-5">
                 <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 font-mono">
