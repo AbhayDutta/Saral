@@ -49,4 +49,25 @@ describe('scanDocument', () => {
     expect(state?.type).toBe('select');
     expect(state?.options?.map((option) => option.value)).toEqual(['', 'DL', 'MH']);
   });
+
+  it('detects page language as English for English form', () => {
+    document.body.innerHTML = simpleForm;
+    const schema = scanDocument(document);
+    expect(schema.pageLanguage).toBe('en');
+  });
+
+  it('detects page language as Hindi when Devanagari text or lang="hi" is present', () => {
+    document.documentElement.setAttribute('lang', 'hi');
+    document.body.innerHTML = `
+      <form>
+        <label for="naam">पूरा नाम</label>
+        <input id="naam" type="text" />
+        <label for="pata">पता</label>
+        <input id="pata" type="text" />
+      </form>
+    `;
+    const schema = scanDocument(document);
+    expect(schema.pageLanguage).toBe('hi');
+    document.documentElement.removeAttribute('lang');
+  });
 });

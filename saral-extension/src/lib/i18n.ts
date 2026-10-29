@@ -95,6 +95,7 @@ const en = {
   errorUnknown: 'Something went wrong. Please try again.',
   errorNotReady: 'Saral is not ready yet. Try again in a moment.',
   micError: 'Could not use the microphone. Check permission and try again.',
+  grantMicPermission: 'Allow microphone access',
 } as const;
 
 const hi: Record<keyof typeof en, string> = {
@@ -192,6 +193,7 @@ const hi: Record<keyof typeof en, string> = {
   errorUnknown: 'कुछ गड़बड़ हो गई। कृपया फिर कोशिश करें।',
   errorNotReady: 'सरल अभी तैयार नहीं है। एक पल बाद कोशिश करें।',
   micError: 'माइक्रोफ़ोन इस्तेमाल नहीं हो पाया। अनुमति जाँचें और फिर कोशिश करें।',
+  grantMicPermission: 'माइक्रोफ़ोन अनुमति दें',
 };
 
 export type StringKey = keyof typeof en;
