@@ -1,7 +1,9 @@
 import type { Field } from '@/lib/schema/types';
 import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
+import { useSpeech } from '@/lib/useSpeech';
 import { FieldMic } from './FieldMic';
+import { SkipIcon, SpeakerIcon, StopIcon } from './Icons';
 
 export function GuidedPrompt({
   field,
@@ -16,56 +18,49 @@ export function GuidedPrompt({
   onRecorded?: (blob: Blob) => void;
   disabled?: boolean;
 }) {
-  function speak(): void {
-    if (!('speechSynthesis' in window)) return;
-
-    const utterance = new SpeechSynthesisUtterance(
-      field.hint ? `${field.label}. ${field.hint}` : field.label,
-    );
-    utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-  }
+  const { supported, speaking, speak, stop } = useSpeech(language);
 
   return (
-    <div className="card px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-        {language === 'hi' ? 'अगला सवाल' : 'Next question'}
-      </p>
-      <p className="mt-1.5 text-[15px] font-semibold leading-snug text-slate-900">
+    // The only tinted, larger-radius surface in the panel: it is the thing to do next.
+    <section
+      className="card-hero px-4 pb-3.5 pt-4"
+      aria-label={language === 'hi' ? 'अगला सवाल' : 'Next question'}
+    >
+      <h2 className="text-[19px] font-semibold leading-snug text-ink-900">
         {field.label}
-        {field.required && <span className="ml-0.5 text-brand-500">*</span>}
-      </p>
-      {field.hint && <p className="mt-1 text-[12px] text-slate-500">{field.hint}</p>}
-
-      <div className="mt-3 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={speak}
-          className="btn-ghost"
-        >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5">
-            <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z" />
-          </svg>
-          {t('speakQuestion', language)}
-        </button>
-        {onSkip && (
-          <button
-            type="button"
-            onClick={onSkip}
-            className="btn-ghost"
-          >
-            {language === 'hi' ? 'छोड़ें' : 'Skip'}
-          </button>
+        {field.required && (
+          <span className="ml-1 text-brand-600" aria-hidden="true">
+            *
+          </span>
         )}
+      </h2>
+      {field.hint && <p className="mt-1 text-[13.5px] leading-snug text-ink-600">{field.hint}</p>}
+
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <div className="-ml-2 flex items-center gap-0.5">
+          {supported && (
+            <button
+              type="button"
+              aria-pressed={speaking}
+              onClick={() => (speaking ? stop() : speak(field.hint ? `${field.label}. ${field.hint}` : field.label))}
+              className="btn-ghost"
+            >
+              {speaking ? <StopIcon className="h-3.5 w-3.5" /> : <SpeakerIcon className="h-4 w-4" />}
+              {t('speakQuestion', language)}
+            </button>
+          )}
+          {onSkip && (
+            <button type="button" onClick={onSkip} className="btn-ghost">
+              <SkipIcon className="h-3.5 w-3.5" />
+              {language === 'hi' ? 'छोड़ें' : 'Skip'}
+            </button>
+          )}
+        </div>
+
         {onRecorded && (
-          <FieldMic
-            onRecorded={onRecorded}
-            language={language}
-            disabled={disabled}
-          />
+          <FieldMic onRecorded={onRecorded} language={language} disabled={disabled} variant="primary" />
         )}
       </div>
-    </div>
+    </section>
   );
 }
