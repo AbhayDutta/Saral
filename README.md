@@ -1,13 +1,12 @@
 # Saral (सरल)
 
-**Fill any web form by speaking in Hindi or English.**
+![Saral Landing Page](public/landingpage.png)
+
+**Fill any web form by speaking in your language.**
 
 Saral is a browser extension for people with limited digital literacy. Press a hotkey on a web form, and Saral explains the form in Hindi, listens to you speak, fills the fields, flags anything missing or wrong, and lets you review everything before it touches the page. It never submits the form for you.
 
 > Built for a hackathon problem statement: *AI-Powered Multilingual Voice Assistant for Digital Form Automation.*
-
-<!-- Replace with your own assets -->
-<!-- ![Saral demo](docs/demo.gif) -->
 
 [Demo video](#) · [Landing page](#) · [Chrome Web Store](#) · [Edge Add-ons](#)
 

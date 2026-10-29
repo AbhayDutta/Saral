@@ -1,7 +1,7 @@
 import React from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
-import { ArrowRightIcon, EdgeIcon, LockIcon, ZapIcon } from "./Icons";
+import { ArrowRightIcon, EdgeIcon, LockIcon, PlayIcon, ZapIcon } from "./Icons";
 import { HeroVoiceDemo } from "./HeoVoiceDemo";
 
 /** Entrance order: each element rises 110ms after the previous one. */
@@ -29,14 +29,14 @@ export function Hero() {
       <div className="mx-auto max-w-6xl px-6 text-center sm:px-8">
         {/* Announcement */}
         <a
-          href="#features"
+          href="#demo"
           style={step(0)}
           className="hero-rise hero-pill group mb-9 inline-flex items-center gap-2.5 rounded-full bg-white/4 py-1.5 pl-1.5 pr-3.5 text-[13px] text-zinc-300 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
         >
           <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">
-            Saral 1.0
+            Interactive Demo
           </span>
-          Voice-first form assistant for everyone
+          Try the voice form simulator
           <ArrowRightIcon className="h-3 w-3 text-zinc-500 transition-all group-hover:translate-x-0.5 group-hover:text-zinc-300" />
         </a>
 
@@ -67,8 +67,15 @@ export function Hero() {
             <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </a>
           <a
+            href="https://github.com/AbhayDutta/Saral"
+            className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 text-[15px] font-medium text-white backdrop-blur-sm transition-all hover:border-emerald-500/30 hover:bg-white/10 hover:text-emerald-300 active:scale-[0.98] sm:w-auto"
+          >
+            <PlayIcon className="h-3.5 w-3.5 text-emerald-400" />
+            <span>Try Live Demo</span>
+          </a>
+          <a
             href="#how-it-works"
-            className="inline-flex h-12 items-center rounded-full px-5 text-[15px] font-medium text-zinc-300 transition-colors hover:text-white"
+            className="inline-flex h-12 items-center rounded-full px-5 text-[15px] font-medium text-zinc-400 transition-colors hover:text-white"
           >
             See how it works
           </a>
