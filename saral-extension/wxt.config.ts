@@ -11,7 +11,7 @@ export default defineConfig({
     name: 'Saral',
     description: 'Fill Indian government and bank forms by voice.',
     permissions: ['sidePanel', 'storage', 'activeTab', 'scripting'],
-    host_permissions: ['https://api.groq.com/*', 'https://openrouter.ai/*'],
+    host_permissions: ['https://api.sarvam.ai/*', 'https://openrouter.ai/*'],
     icons: {
       16: 'icon/icon16.png',
       32: 'icon/icon32.png',

@@ -9,8 +9,8 @@ Zod and Zustand.
 1. The person presses `Ctrl+Shift+S` (`Command+Shift+S` on macOS) on a form.
 2. Saral scans the fields and explains the form's purpose and required fields
    in Hindi, with optional text-to-speech.
-3. The person speaks in Hindi, English, or Hinglish. Groq Whisper
-   auto-detects the language.
+3. The person speaks in Hindi, English, or Hinglish. Sarvam AI (Saaras)
+   transcribes the speech.
 4. OpenRouter extracts the values and maps them to the right fields.
 5. Saral normalises dates, phone numbers and spoken emails, then flags missing
    or invalid values in plain language.
@@ -33,7 +33,7 @@ opens).
 
 Open the extension's **Settings** page and add:
 
-- a Groq API key for speech-to-text
+- a Sarvam AI API key for speech-to-text (Saaras)
 - an OpenRouter API key for extraction, translation and form explanation
 
 Keys are stored in `browser.storage.local` and are never bundled into the
@@ -53,7 +53,7 @@ npm run build
 - `src/entrypoints/content/` — the only code that touches the page
 - `src/entrypoints/sidepanel/` — recording, explanation and review UI
 - `src/entrypoints/options/` — API keys, language and model names
-- `src/lib/ai/` — Groq transcription, OpenRouter chat, extraction, translation
+- `src/lib/ai/` — Sarvam AI transcription, OpenRouter chat, extraction, translation
 - `src/lib/schema/` — schema types, validation, normalisation
 - `src/components/` — reusable UI, including the Hindi form overview
 - `src/tests/` — scanner, filler, validation and normalisation tests

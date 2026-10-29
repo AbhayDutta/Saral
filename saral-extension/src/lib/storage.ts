@@ -3,7 +3,7 @@ import type { Language } from './i18n';
 export type SettingLanguage = 'auto' | Language;
 
 export interface Settings {
-  groqApiKey: string;
+  sarvamApiKey: string;
   openrouterApiKey: string;
   defaultLanguage: SettingLanguage;
   transcriptionModel: string;
@@ -12,10 +12,10 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  groqApiKey: '',
+  sarvamApiKey: '',
   openrouterApiKey: '',
   defaultLanguage: 'auto',
-  transcriptionModel: 'whisper-large-v3-turbo',
+  transcriptionModel: 'saaras:v4',
   extractionModel: 'google/gemini-2.5-flash',
   fallbackModel: 'meta-llama/llama-3.3-70b-instruct',
 };
@@ -32,8 +32,18 @@ export interface Draft {
 
 export async function getSettings(): Promise<Settings> {
   const stored = await browser.storage.local.get(SETTINGS_KEY);
-  const saved = stored[SETTINGS_KEY] as Partial<Settings> | undefined;
-  return { ...DEFAULT_SETTINGS, ...saved };
+  const saved = stored[SETTINGS_KEY] as (Partial<Settings> & { groqApiKey?: string }) | undefined;
+  const model =
+    saved?.transcriptionModel && saved.transcriptionModel.startsWith('saaras')
+      ? saved.transcriptionModel
+      : DEFAULT_SETTINGS.transcriptionModel;
+
+  return {
+    ...DEFAULT_SETTINGS,
+    ...saved,
+    sarvamApiKey: saved?.sarvamApiKey ?? '',
+    transcriptionModel: model,
+  };
 }
 
 export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
