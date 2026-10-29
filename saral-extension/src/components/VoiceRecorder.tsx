@@ -57,8 +57,6 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
     }
   }
 
-  const hi = language === 'hi';
-
   return (
     <div className="flex flex-col items-center gap-4 px-4 py-8">
       {/* Mic: two offset ripples while recording, so it feels like it is listening. */}
@@ -79,11 +77,7 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
           disabled={disabled}
           data-recording={recording}
           aria-pressed={recording}
-          aria-label={
-            recording
-              ? hi ? 'रिकॉर्डिंग रोकें' : 'Stop recording'
-              : hi ? 'रिकॉर्डिंग शुरू करें' : 'Start recording'
-          }
+          aria-label={recording ? t('stopListening', language) : t('startSpeaking', language)}
           className="mic-btn"
         >
           {recording ? <StopIcon className="h-6 w-6" /> : <MicIcon className="h-8 w-8" strokeWidth={1.5} />}

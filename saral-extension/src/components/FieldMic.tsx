@@ -50,7 +50,6 @@ export function FieldMic({
     }
   }
 
-  const hi = language === 'hi';
   const primary = variant === 'primary';
 
   const size = primary ? 'h-11 w-11' : 'h-10 w-10';
@@ -68,12 +67,8 @@ export function FieldMic({
         type="button"
         onClick={() => void toggle()}
         disabled={disabled}
-        title={hi ? 'यह जानकारी बोलें' : 'Speak this field'}
-        aria-label={
-          recording
-            ? hi ? 'रिकॉर्डिंग रोकें' : 'Stop recording'
-            : hi ? 'बोलकर भरें' : 'Record this field'
-        }
+        title={recording ? t('stopRecording', language) : t('recordThisField', language)}
+        aria-label={recording ? t('stopRecording', language) : t('recordThisField', language)}
         aria-pressed={recording}
         className={`relative grid place-items-center rounded-full transition-[background-color,color,box-shadow,transform] duration-150 active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${size} ${tone}`}
       >

@@ -11,7 +11,7 @@ export type PanelRequest =
   | { type: 'SCAN_PAGE' }
   | { type: 'TRANSCRIBE'; audioBase64: string; mimeType: string; language?: string }
   | { type: 'EXTRACT'; schema: Schema; transcript: string; targetLanguage?: Language }
-  | { type: 'TRANSLATE'; schema: Schema }
+  | { type: 'TRANSLATE'; schema: Schema; targetLanguage?: Language }
   | { type: 'FILL'; schema: Schema; values: Record<string, string> }
   | {
       type: 'HIGHLIGHT';
