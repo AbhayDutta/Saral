@@ -1,4 +1,5 @@
 import { AppError } from '../errors';
+import type { Language } from '../i18n';
 import type { Schema } from '../schema/types';
 import { chat } from './openrouter';
 import { EXTRACTION_SYSTEM, extractionPrompt } from './prompts';
@@ -8,11 +9,15 @@ export interface ExtractedValues {
   confidence: Record<string, number>;
 }
 
-export async function extract(schema: Schema, transcript: string): Promise<ExtractedValues> {
+export async function extract(
+  schema: Schema,
+  transcript: string,
+  targetLanguage: Language = schema.pageLanguage ?? 'en',
+): Promise<ExtractedValues> {
   const content = await chat(
     [
       { role: 'system', content: EXTRACTION_SYSTEM },
-      { role: 'user', content: extractionPrompt(schema, transcript) },
+      { role: 'user', content: extractionPrompt(schema, transcript, targetLanguage) },
     ],
     { json: true },
   );

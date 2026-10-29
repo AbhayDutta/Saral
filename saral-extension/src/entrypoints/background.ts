@@ -38,7 +38,10 @@ async function handleRequest(request: PanelRequest): Promise<ExtensionResponse<u
       }
 
       case 'EXTRACT':
-        return { ok: true, data: await extract(request.schema, request.transcript) };
+        return {
+          ok: true,
+          data: await extract(request.schema, request.transcript, request.targetLanguage),
+        };
 
       case 'TRANSLATE':
         return { ok: true, data: await translateSchema(request.schema) };

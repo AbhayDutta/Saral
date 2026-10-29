@@ -1,9 +1,11 @@
 import type { Language } from './i18n';
 
+export type SettingLanguage = 'auto' | Language;
+
 export interface Settings {
   groqApiKey: string;
   openrouterApiKey: string;
-  defaultLanguage: Language;
+  defaultLanguage: SettingLanguage;
   transcriptionModel: string;
   extractionModel: string;
   fallbackModel: string;
@@ -12,7 +14,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   groqApiKey: '',
   openrouterApiKey: '',
-  defaultLanguage: 'hi',
+  defaultLanguage: 'auto',
   transcriptionModel: 'whisper-large-v3-turbo',
   extractionModel: 'google/gemini-2.5-flash',
   fallbackModel: 'meta-llama/llama-3.3-70b-instruct',

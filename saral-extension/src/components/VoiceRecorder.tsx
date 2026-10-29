@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AudioRecorder } from '@/lib/audio';
+import { AudioRecorder, isPermissionError, openMicPermissionTab } from '@/lib/audio';
 import type { Recording } from '@/lib/audio';
 import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
@@ -15,6 +15,7 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [needsPermission, setNeedsPermission] = useState(false);
 
   useEffect(() => {
     if (!recording) return;
@@ -27,6 +28,7 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
   async function toggle(): Promise<void> {
     if (disabled) return;
     setError(null);
+    setNeedsPermission(false);
 
     try {
       if (recording) {
@@ -47,6 +49,7 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
       setRecording(false);
       recorder.current = null;
       setError(t('micError', language));
+      setNeedsPermission(isPermissionError(caught));
       console.warn(caught);
     }
   }
@@ -74,7 +77,20 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
       </p>
 
       {recording && <Waveform />}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && (
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-center text-xs text-red-600">{error}</p>
+          {needsPermission && (
+            <button
+              type="button"
+              onClick={openMicPermissionTab}
+              className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-emerald-700"
+            >
+              {t('grantMicPermission', language)}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

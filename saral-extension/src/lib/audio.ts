@@ -106,3 +106,23 @@ export function base64ToBlob(base64: string, mimeType: string): Blob {
   }
   return new Blob([bytes], { type: mimeType });
 }
+
+export function openMicPermissionTab(): void {
+  const url = browser.runtime.getURL('/permission.html');
+  void browser.tabs.create({ url });
+}
+
+export function isPermissionError(error: unknown): boolean {
+  if (typeof DOMException !== 'undefined' && error instanceof DOMException) {
+    return (
+      error.name === 'NotAllowedError' ||
+      error.name === 'PermissionDeniedError' ||
+      error.name === 'SecurityError'
+    );
+  }
+  if (error instanceof Error) {
+    return /permission|not allowed|denied/i.test(error.message);
+  }
+  return false;
+}
+

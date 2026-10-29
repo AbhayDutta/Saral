@@ -4,19 +4,46 @@ import { createRoot } from 'react-dom/client';
 import { toUserMessage } from '@/lib/errors';
 import type { Language } from '@/lib/i18n';
 import { getSettings, saveSettings } from '@/lib/storage';
-import type { Settings } from '@/lib/storage';
+import type { Settings, SettingLanguage } from '@/lib/storage';
 import '@/styles/globals.css';
 
 function Options() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [micState, setMicState] = useState<'idle' | 'testing' | 'granted' | 'denied'>('idle');
+  const [micError, setMicError] = useState<string | null>(null);
 
   useEffect(() => {
     void getSettings()
       .then(setSettings)
       .catch((caught) => setError(toUserMessage(caught)));
+
+    if (typeof navigator !== 'undefined' && 'permissions' in navigator) {
+      navigator.permissions
+        ?.query({ name: 'microphone' as PermissionName })
+        ?.then((status) => {
+          if (status.state === 'granted') setMicState('granted');
+          else if (status.state === 'denied') setMicState('denied');
+        })
+        ?.catch(() => {});
+    }
   }, []);
+
+  async function testOrGrantMic() {
+    setMicState('testing');
+    setMicError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      setMicState('granted');
+    } catch (err) {
+      setMicState('denied');
+      if (err instanceof Error) {
+        setMicError(err.message);
+      }
+    }
+  }
 
   function update(patch: Partial<Settings>): void {
     setSettings((current) => (current ? { ...current, ...patch } : current));
@@ -85,14 +112,15 @@ function Options() {
           />
         </Field>
 
-        <Field label="Default language">
+        <Field label="Default language" hint="Auto matches the language of the webpage (English for English forms, Hindi for Hindi forms).">
           <select
             value={settings.defaultLanguage}
-            onChange={(event) => update({ defaultLanguage: event.target.value as Language })}
+            onChange={(event) => update({ defaultLanguage: event.target.value as SettingLanguage })}
             className={INPUT}
           >
-            <option value="hi">हिंदी</option>
+            <option value="auto">Auto (Match webpage language)</option>
             <option value="en">English</option>
+            <option value="hi">हिंदी (Hindi)</option>
           </select>
         </Field>
 
@@ -127,6 +155,33 @@ function Options() {
           Save settings
         </button>
       </form>
+
+      <div className="mt-8 border-t border-slate-200 pt-6">
+        <h2 className="text-base font-semibold text-slate-900">Microphone access</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          In Chrome, extension side panels cannot request microphone access directly. Permission must be granted once in an extension tab like this one.
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => void testOrGrantMic()}
+            disabled={micState === 'testing'}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          >
+            {micState === 'testing' ? 'Testing…' : 'Test / Allow microphone'}
+          </button>
+
+          {micState === 'granted' && (
+            <span className="text-sm font-medium text-emerald-600">✓ Microphone permission granted!</span>
+          )}
+          {micState === 'denied' && (
+            <span className="text-sm font-medium text-red-600">
+              ✗ Permission failed{micError ? `: ${micError}` : ''}
+            </span>
+          )}
+        </div>
+      </div>
     </main>
   );
 }

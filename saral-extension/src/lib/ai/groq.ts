@@ -14,9 +14,15 @@ export async function transcribe(audio: Blob, language = ''): Promise<string> {
   form.append('file', audio, filename);
   form.append('model', settings.transcriptionModel);
 
-  // Leave the language out by default so Whisper can handle Hindi, English,
-  // and Hinglish in the same recording.
-  if (language && language !== 'auto') form.append('language', language);
+  if (language === 'hi') {
+    form.append('language', 'hi');
+    form.append('prompt', 'हिंदी फ़ॉर्म भरना। Hindi, English, and Hinglish speech.');
+  } else if (language === 'en') {
+    form.append('language', 'en');
+    form.append('prompt', 'English form filling. Details, names, and addresses in English.');
+  } else if (language && language !== 'auto') {
+    form.append('language', language);
+  }
 
   let response: Response;
 
