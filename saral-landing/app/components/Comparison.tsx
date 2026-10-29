@@ -21,9 +21,9 @@ export function Comparison() {
         {/* 2-Column Comparison Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           {/* Card 1: Old Way */}
-          <div className="p-8 sm:p-10 rounded-3xl bg-zinc-950/60 border border-white/[0.08] flex flex-col justify-between">
+          <div className="p-8 sm:p-10 rounded-3xl bg-zinc-950/60 border border-white/8 flex flex-col justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-white/[0.06] text-zinc-400 text-xs font-medium mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-white/6 text-zinc-400 text-xs font-medium mb-6">
                 <span>The Traditional Struggle</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-6">
@@ -32,7 +32,7 @@ export function Comparison() {
 
               <ul className="space-y-4 text-sm text-zinc-400">
                 <li className="flex items-start gap-3">
-                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/[0.08] text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/8 text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
                     ✕
                   </span>
                   <span>
@@ -40,7 +40,7 @@ export function Comparison() {
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/[0.08] text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/8 text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
                     ✕
                   </span>
                   <span>
@@ -48,7 +48,7 @@ export function Comparison() {
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/[0.08] text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/8 text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
                     ✕
                   </span>
                   <span>
@@ -56,7 +56,7 @@ export function Comparison() {
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/[0.08] text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                  <span className="w-5 h-5 rounded-full bg-zinc-900 border border-white/8 text-zinc-500 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
                     ✕
                   </span>
                   <span>
@@ -66,7 +66,7 @@ export function Comparison() {
               </ul>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/[0.06] text-xs text-zinc-500">
+            <div className="mt-8 pt-4 border-t border-white/6 text-xs text-zinc-500">
               Average time: 15–25 minutes of friction
             </div>
           </div>

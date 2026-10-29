@@ -281,7 +281,7 @@ function Section({
           <p className="mt-0.5 text-[13.5px] leading-snug text-ink-500">{description}</p>
         )}
       </div>
-      <div className="card divide-y divide-ink-900/[0.06]">{children}</div>
+      <div className="card divide-y divide-ink-900/6">{children}</div>
     </section>
   );
 }

@@ -349,7 +349,7 @@ export default function App() {
   return (
     <div className="flex min-h-dvh flex-col bg-ink-50">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 border-b border-ink-900/[0.06] bg-white/85 px-4 pt-4 backdrop-blur-md">
+      <header className="sticky top-0 z-20 border-b border-ink-900/6 bg-white/85 px-4 pt-4 backdrop-blur-md">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h1 className="truncate text-[19px] font-semibold leading-tight text-ink-900">
@@ -382,7 +382,7 @@ export default function App() {
                 className="group flex flex-col gap-1.5 pb-3 text-left disabled:pointer-events-none"
               >
                 <span
-                  className={`h-[3px] rounded-full transition-colors duration-300 ${
+                  className={`h-0.75 rounded-full transition-colors duration-300 ${
                     isActive ? 'bg-brand-600' : isCompleted ? 'bg-brand-300' : 'bg-ink-200'
                   }`}
                 />
@@ -424,7 +424,7 @@ export default function App() {
                 </span>
                 <div className="space-y-1">
                   <p className="text-[15px] font-semibold text-ink-800">{t('noForm', language)}</p>
-                  <p className="mx-auto max-w-[17rem] text-[13.5px] leading-snug text-ink-500">
+                  <p className="mx-auto max-w-68 text-[13.5px] leading-snug text-ink-500">
                     {language === 'hi'
                       ? 'किसी वेब फ़ॉर्म पर जाएं और स्कैन करें।'
                       : 'Navigate to a web form, then tap Scan.'}
@@ -440,7 +440,7 @@ export default function App() {
                 disabled={!schema || schema.fields.length === 0}
                 className={`${PRIMARY} w-full`}
               >
-                <Mic className="h-[18px] w-[18px]" strokeWidth={1.8} />
+                <Mic className="h-4.5 w-4.5" strokeWidth={1.8} />
                 {t('speak', language)}
               </button>
               <button
@@ -471,7 +471,7 @@ export default function App() {
             )}
 
             <div className="card overflow-hidden">
-              <p className="border-b border-ink-900/[0.06] px-4 py-2.5 text-center text-[13px] font-medium text-ink-500">
+              <p className="border-b border-ink-900/6 px-4 py-2.5 text-center text-[13px] font-medium text-ink-500">
                 {t('orSayAll', language)}
               </p>
               <VoiceRecorder
@@ -600,7 +600,7 @@ export default function App() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-ink-900/[0.06] bg-white px-4 py-2">
+      <footer className="border-t border-ink-900/6 bg-white px-4 py-2">
         <button
           type="button"
           onClick={() => void browser.runtime.openOptionsPage()}

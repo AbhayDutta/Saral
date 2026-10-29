@@ -14,7 +14,7 @@ export function BentoGrid() {
   const [activeLang, setActiveLang] = useState<"hi" | "hinglish" | "en">("hi");
 
   return (
-    <section id="features" className="py-24 sm:py-32 bg-black border-t border-white/[0.08] font-sf">
+    <section id="features" className="py-24 sm:py-32 bg-black border-t border-white/8 font-sf">
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mb-16 sm:mb-20">
@@ -34,13 +34,13 @@ export function BentoGrid() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: 2-column wide - Code Switching Speech */}
-          <div className="md:col-span-2 p-8 rounded-3xl bg-zinc-950/80 border border-white/[0.08] shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
+          <div className="md:col-span-2 p-8 rounded-3xl bg-zinc-950/80 border border-white/8 shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-950/70 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
                   <GlobeIcon className="w-5 h-5" />
                 </div>
-                <div className="flex gap-1.5 p-1 bg-zinc-900 border border-white/[0.06] rounded-xl text-xs font-medium">
+                <div className="flex gap-1.5 p-1 bg-zinc-900 border border-white/6 rounded-xl text-xs font-medium">
                   <button
                     onClick={() => setActiveLang("hi")}
                     className={`px-3 py-1 rounded-lg transition-all ${
@@ -82,7 +82,7 @@ export function BentoGrid() {
               </p>
 
               {/* Sample Voice Demonstration Box */}
-              <div className="p-4 rounded-2xl bg-black/80 border border-white/[0.08]">
+              <div className="p-4 rounded-2xl bg-black/80 border border-white/8">
                 <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mb-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Real-time voice stream</span>
@@ -98,14 +98,14 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-zinc-400">
+            <div className="mt-8 pt-4 border-t border-white/6 flex items-center justify-between text-xs text-zinc-400">
               <span>Groq Whisper V3 API</span>
               <span className="font-mono text-emerald-400 font-medium">Avg latency: 238ms</span>
             </div>
           </div>
 
           {/* Card 2: 1-column - Smart Normalizer */}
-          <div className="p-8 rounded-3xl bg-zinc-950/80 border border-white/[0.08] shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
+          <div className="p-8 rounded-3xl bg-zinc-950/80 border border-white/8 shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
             <div>
               <div className="w-10 h-10 rounded-2xl bg-emerald-950/70 text-emerald-400 flex items-center justify-center mb-6 border border-emerald-500/20">
                 <SparklesIcon className="w-5 h-5" />
@@ -120,24 +120,25 @@ export function BentoGrid() {
 
               {/* Interactive normalization rows */}
               <div className="space-y-2.5 font-mono text-xs">
-                <div className="p-2.5 rounded-xl bg-black/80 border border-white/[0.08] flex items-center justify-between">
-                  <span className="text-zinc-500 text-[11px] truncate max-w-[130px]">
+                <div className="p-2.5 rounded-xl bg-black/80 border border-white/8 flex items-center justify-between">
+                  <span className="text-zinc-500 text-[11px] truncate max-w-32.5">
                     &quot;15 August 1968&quot;
                   </span>
                   <span className="text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.5 rounded">
                     15/08/1968
                   </span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-black/80 border border-white/[0.08] flex items-center justify-between">
-                  <span className="text-zinc-500 text-[11px] truncate max-w-[130px]">
+                <div className="p-2.5 rounded-xl bg-black/80 border border-white/8 flex items-center justify-between">
+                  <span className="text-zinc-500 text-[11px] truncate max-w-
+                  [130px]">
                     &quot;2.5 lakh rupees&quot;
                   </span>
                   <span className="text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.5 rounded">
                     ₹2,50,000
                   </span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-black/80 border border-white/[0.08] flex items-center justify-between">
-                  <span className="text-zinc-500 text-[11px] truncate max-w-[130px]">
+                <div className="p-2.5 rounded-xl bg-black/80 border border-white/8 flex items-center justify-between">
+                  <span className="text-zinc-500 text-[11px] truncate max-w-32.5">
                     &quot;john dot doe at mail&quot;
                   </span>
                   <span className="text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.5 rounded">
@@ -147,13 +148,13 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/[0.06] text-xs text-zinc-500">
+            <div className="mt-8 pt-4 border-t border-white/6 text-xs text-zinc-500">
               Zero manual formatting needed
             </div>
           </div>
 
           {/* Card 3: 1-column - Spoken Audio Explainer */}
-          <div className="p-8 rounded-3xl bg-zinc-950/80 border border-white/[0.08] shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
+          <div className="p-8 rounded-3xl bg-zinc-950/80 border border-white/8 shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
             <div>
               <div className="w-10 h-10 rounded-2xl bg-emerald-950/70 text-emerald-400 flex items-center justify-center mb-6 border border-emerald-500/20">
                 <SpeakerIcon className="w-5 h-5" />
@@ -171,13 +172,13 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/[0.06] text-xs text-zinc-500">
+            <div className="mt-8 pt-4 border-t border-white/6 text-xs text-zinc-500">
               Respectful, simple audio prompts
             </div>
           </div>
 
           {/* Card 4: 2-column - The Golden Rule: Never Auto-Submit */}
-          <div className="md:col-span-2 p-8 rounded-3xl bg-zinc-950/80 border border-white/[0.08] shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
+          <div className="md:col-span-2 p-8 rounded-3xl bg-zinc-950/80 border border-white/8 shadow-xs flex flex-col justify-between hover:border-white/[0.16] transition-all">
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-950/70 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
@@ -197,11 +198,11 @@ export function BentoGrid() {
 
               {/* Visual Workflow Steps */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-black/80 border border-white/[0.08]">
+                <div className="p-3 rounded-xl bg-black/80 border border-white/8">
                   <span className="font-semibold text-white block mb-1">1. Voice Scan</span>
                   <span className="text-zinc-400">Saral maps fields to values accurately.</span>
                 </div>
-                <div className="p-3 rounded-xl bg-black/80 border border-white/[0.08]">
+                <div className="p-3 rounded-xl bg-black/80 border border-white/8">
                   <span className="font-semibold text-white block mb-1">2. Visual Injection</span>
                   <span className="text-zinc-400">Fields on page glow green with values.</span>
                 </div>
@@ -212,14 +213,14 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-zinc-500">
+            <div className="mt-8 pt-4 border-t border-white/6 flex items-center justify-between text-xs text-zinc-500">
               <span>Safety architecture</span>
               <span className="text-emerald-400 font-medium">Zero accidental submissions</span>
             </div>
           </div>
 
           {/* Card 5: Full Width / 3-column - Universal DOM Scanner */}
-          <div className="md:col-span-3 p-8 rounded-3xl bg-zinc-950 border border-white/[0.1] text-white flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="md:col-span-3 p-8 rounded-3xl bg-zinc-950 border border-white/10 text-white flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 text-zinc-300 text-xs font-semibold border border-white/[0.1] mb-4">
                 <FileTextIcon className="w-3.5 h-3.5 text-emerald-400" />
@@ -234,16 +235,16 @@ export function BentoGrid() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
-              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/[0.08] text-xs font-mono text-zinc-300">
+              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/8 text-xs font-mono text-zinc-300">
                 Government Portals
               </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/[0.08] text-xs font-mono text-zinc-300">
+              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/8 text-xs font-mono text-zinc-300">
                 Banking & KYC
               </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/[0.08] text-xs font-mono text-zinc-300">
+              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/8 text-xs font-mono text-zinc-300">
                 Scholarships
               </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/[0.08] text-xs font-mono text-zinc-300">
+              <span className="px-3.5 py-1.5 rounded-full bg-zinc-900 border border-white/8 text-xs font-mono text-zinc-300">
                 Google Forms
               </span>
             </div>

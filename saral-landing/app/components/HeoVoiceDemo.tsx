@@ -107,11 +107,11 @@ export function HeroVoiceDemo() {
     >
       <div aria-hidden="true" className="absolute -inset-x-6 -inset-y-4 -z-10 rounded-[40px] bg-emerald-500/10 blur-2xl" />
 
-      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 rounded-[28px] bg-white/[0.045] p-3 text-left shadow-[0_30px_80px_-24px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] ring-1 ring-white/10 backdrop-blur-xl sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:p-3.5">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 rounded-[28px] bg-white/4.5 p-3 text-left shadow-[0_30px_80px_-24px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] ring-1 ring-white/10 backdrop-blur-xl sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:p-3.5">
         {/* Mic orb: ripples while "listening", settles once the sentence lands */}
         <div className="relative grid h-12 w-12 place-items-center">
           {!done && <span aria-hidden="true" className="hero-ripple absolute inset-0 rounded-full bg-emerald-400/30" />}
-          <span className="relative grid h-12 w-12 place-items-center rounded-full bg-gradient-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_24px_-8px_rgba(16,185,129,0.9)]">
+          <span className="relative grid h-12 w-12 place-items-center rounded-full bg-linear-to-b from-emerald-300 to-emerald-500 text-emerald-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_24px_-8px_rgba(16,185,129,0.9)]">
             <MicIcon className="h-5 w-5" />
           </span>
         </div>
@@ -120,7 +120,7 @@ export function HeroVoiceDemo() {
         <div className="min-w-0">
           <div className="mb-1 flex items-center gap-2.5 text-[11px] font-medium text-zinc-400">
             <span>{demo.lang}</span>
-            <span aria-hidden="true" data-idle={done} className="hero-bars flex h-4 items-center gap-[2px] text-emerald-400">
+            <span aria-hidden="true" data-idle={done} className="hero-bars flex h-4 items-center gap-0.5 text-emerald-400">
               {Array.from({ length: BARS }, (_, i) => {
                 const style = {
                   "--d": `${0.7 + ((i * 7) % 5) * 0.12}s`,
@@ -145,7 +145,7 @@ export function HeroVoiceDemo() {
 
         {/* Result */}
         <div
-          className={`col-span-2 flex items-center justify-between gap-4 rounded-2xl bg-black/40 px-3.5 py-2.5 ring-1 ring-inset transition-all duration-500 sm:col-span-1 sm:min-w-[12rem] ${
+          className={`col-span-2 flex items-center justify-between gap-4 rounded-2xl bg-black/40 px-3.5 py-2.5 ring-1 ring-inset transition-all duration-500 sm:col-span-1 sm:min-w-48 ${
             done ? "translate-y-0 opacity-100 ring-emerald-400/30" : "translate-y-1 opacity-40 ring-white/10"
           }`}
         >
