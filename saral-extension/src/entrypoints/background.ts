@@ -44,7 +44,7 @@ async function handleRequest(request: PanelRequest): Promise<ExtensionResponse<u
         };
 
       case 'TRANSLATE':
-        return { ok: true, data: await translateSchema(request.schema) };
+        return { ok: true, data: await translateSchema(request.schema, request.targetLanguage) };
 
       case 'FILL': {
         const tab = await getActiveTab();

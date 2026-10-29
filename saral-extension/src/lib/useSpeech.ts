@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Language } from '@/lib/i18n';
+import { SARVAM_CODE_MAP } from '@/lib/i18n';
 
 export function useSpeech(language: Language) {
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -26,7 +27,7 @@ export function useSpeech(language: Language) {
       if (!supported) return;
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+      utterance.lang = SARVAM_CODE_MAP[language] ?? 'en-IN';
 
       // Only the latest utterance may flip the state, so a cancelled one can't
       // switch the indicator off while a new one is starting.

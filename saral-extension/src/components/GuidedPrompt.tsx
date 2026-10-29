@@ -24,7 +24,7 @@ export function GuidedPrompt({
     // The only tinted, larger-radius surface in the panel: it is the thing to do next.
     <section
       className="card-hero px-4 pb-3.5 pt-4"
-      aria-label={language === 'hi' ? 'अगला सवाल' : 'Next question'}
+      aria-label={t('nextQuestion', language)}
     >
       <h2 className="text-[19px] font-semibold leading-snug text-ink-900">
         {field.label}
@@ -46,13 +46,13 @@ export function GuidedPrompt({
               className="btn-ghost"
             >
               {speaking ? <StopIcon className="h-3.5 w-3.5" /> : <SpeakerIcon className="h-4 w-4" />}
-              {t('speakQuestion', language)}
+              {speaking ? t('stopSpeaking', language) : t('speakQuestion', language)}
             </button>
           )}
           {onSkip && (
             <button type="button" onClick={onSkip} className="btn-ghost">
               <SkipIcon className="h-3.5 w-3.5" />
-              {language === 'hi' ? 'छोड़ें' : 'Skip'}
+              {t('skip', language)}
             </button>
           )}
         </div>

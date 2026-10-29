@@ -37,15 +37,14 @@ export async function transcribe(audio: Blob, language = ''): Promise<string> {
       : 'saaras:v4';
   form.append('model', model);
 
-  if (language === 'hi') {
-    form.append('language_code', 'hi-IN');
-  } else if (language === 'en') {
-    form.append('language_code', 'en-IN');
-  } else if (language && language !== 'auto') {
-    form.append('language_code', language);
-  } else {
-    form.append('language_code', 'unknown');
-  }
+  // Map Language code → Sarvam BCP-47 code using the central lookup.
+  // Lazy-import to keep the function self-contained when `language` is already
+  // a BCP-47 string passed directly (edge case / tests).
+  const { SARVAM_CODE_MAP } = await import('../i18n');
+  const sarvamCode =
+    SARVAM_CODE_MAP[language as keyof typeof SARVAM_CODE_MAP] ??
+    (language && language !== 'auto' ? language : 'unknown');
+  form.append('language_code', sarvamCode);
 
   form.append('mode', 'transcribe');
 

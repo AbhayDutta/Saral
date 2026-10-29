@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Check, ChevronDown, Eye, EyeOff, Lock, Mic } from 'lucide-react';
 import { Banner } from '@/components/Banner';
 import { toUserMessage } from '@/lib/errors';
+import { LANGUAGES } from '@/lib/i18n';
 import { getSettings, saveSettings } from '@/lib/storage';
 import type { Settings, SettingLanguage } from '@/lib/storage';
 import '@/styles/globals.css'; // must include styles/premium.css
@@ -127,12 +128,12 @@ function Options() {
 
           <Section
             title="Language"
-            description="Speech is auto-detected, so people can speak Hindi, English, or a mix of both."
+            description="Speech is auto-detected, so people can speak in their native language, English, or a mix."
           >
             <Row
               id="default-language"
               label="Default language"
-              hint="Auto matches the language of the webpage: English for English forms, Hindi for Hindi forms."
+              hint="Auto matches the language of the webpage based on its script and content."
             >
               <div className="relative">
                 <select
@@ -144,8 +145,11 @@ function Options() {
                   className="input-base appearance-none pr-9"
                 >
                   <option value="auto">Auto (match webpage language)</option>
-                  <option value="en">English</option>
-                  <option value="hi">हिंदी (Hindi)</option>
+                  {LANGUAGES.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.nativeName} ({lang.englishName})
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown
                   className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400"

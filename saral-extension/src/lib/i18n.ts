@@ -1,203 +1,92 @@
-export type Language = 'en' | 'hi';
+import { as } from './locales/as';
+import { bn } from './locales/bn';
+import { en } from './locales/en';
+import { gu } from './locales/gu';
+import { hi } from './locales/hi';
+import { kn } from './locales/kn';
+import { kok } from './locales/kok';
+import { ml } from './locales/ml';
+import { mr } from './locales/mr';
+import { ne } from './locales/ne';
+import { od } from './locales/od';
+import { pa } from './locales/pa';
+import { ta } from './locales/ta';
+import { te } from './locales/te';
+import { ur } from './locales/ur';
 
-const en = {
-  appName: 'Saral',
-  scan: 'Scan',
-  speak: 'Speak',
-  review: 'Review',
-  done: 'Done',
-  scanPage: 'Scan this page',
-  rescan: 'Scan again',
-  noForm: 'No fillable fields found on this page.',
-  noFormTitle: 'No form found here',
-  hotkeyHint: 'Open any form and press Ctrl+Shift+S (⌘+Shift+S on Mac).',
-  fieldsFound: 'fields found',
-  speakPrompt: 'Tell Saral about this form in your own words.',
-  listening: 'Listening…',
-  processing: 'Working…',
-  transcript: 'What Saral heard',
-  fillForm: 'Fill form',
-  confirmFill: 'Check the values, then fill the page.',
-  allDone: 'Saral filled the form but did not submit it. Check the page, then submit it yourself.',
-  doneTitle: 'Form filled',
-  settings: 'Settings',
-  language: 'Language',
-  english: 'English',
-  hindi: 'हिंदी',
-  optional: 'optional',
-  required: 'required',
-  speakQuestion: 'Hear question',
-  stopSpeaking: 'Stop',
-  missing: 'missing',
-  invalid: 'needs attention',
-  filled: 'ready',
-  empty: 'empty',
-  needsReview: 'check',
-  skipped: 'upload by hand',
-  startOver: 'Scan another page',
-  aboutForm: 'About this form',
-  hearExplanation: 'Hear this',
-  requiredInfo: 'Required information',
-  noRequiredInfo: 'Nothing is marked required.',
-  speechHint: 'You can speak in Hindi, English, or a mix of both.',
-  guidedHint: 'You can answer this one, or say everything at once.',
-  answerThis: 'Answer this question',
-  orSayAll: 'Or say everything at once',
-  checkValue: 'Please check this value once.',
-  requiredField: 'This information is required.',
-  invalidEmail: 'This email does not look right. Example: name@example.com',
-  invalidPhone: 'The mobile number should have 10 digits.',
-  invalidNumber: 'Please enter a valid number.',
-  invalidDate: 'Please enter a date like 05/01/2026.',
-  invalidTime: 'Please enter a time like 10:30.',
-  invalidOption: 'Please choose one of the options shown.',
-  fileManual: 'This file needs to be uploaded by hand.',
-  scanning: 'Reading the page…',
-  transcribing: 'Writing down what you said…',
-  extracting: 'Finding the answers…',
-  fillingForm: 'Filling the form…',
-  answered: 'answered',
-  needsAttention: 'Needs your attention',
-  allGood: 'Everything looks good',
-  allAnswered: 'All questions answered',
-  question: 'Question',
-  skip: 'Skip',
-  recordThisField: 'Speak this answer',
-  stopRecording: 'Stop recording',
-  cancel: 'Cancel',
-  yes: 'Yes',
-  optionsIntro: 'Add your API keys so Saral can listen and understand.',
-  keysStayLocal: 'Keys stay in this browser and are only sent to Sarvam AI and OpenRouter.',
-  keyHelp: 'Need keys? Create them at sarvam.ai and openrouter.ai.',
-  apiKeys: 'API keys',
-  general: 'General',
-  sarvamKeyLabel: 'Sarvam AI API key',
-  sarvamKeyHint: 'Used for Saaras speech-to-text.',
-  openrouterKeyLabel: 'OpenRouter API key',
-  openrouterKeyHint: 'Used for answers and Hindi labels.',
-  defaultLanguage: 'Default language',
-  transcriptionModel: 'Transcription model',
-  extractionModel: 'Extraction model',
-  fallbackModel: 'Fallback model',
-  advanced: 'Advanced settings',
-  showKey: 'Show',
-  hideKey: 'Hide',
-  saveSettings: 'Save settings',
-  saving: 'Saving…',
-  savedOk: 'Settings saved.',
-  loading: 'Loading…',
-  errorMissingKey: 'Add your Sarvam AI and OpenRouter API keys in Settings first.',
-  errorNetwork: "Saral couldn't reach the AI service. Check your connection and try again.",
-  errorApi: 'The AI service returned an error. Please try again.',
-  errorParse: "Saral couldn't understand the AI response. Try speaking again.",
-  errorNoTab: 'Open a webpage with a form first.',
-  errorNoContent: "Saral can't read this page. Reload it and try again.",
-  errorUnknown: 'Something went wrong. Please try again.',
-  errorNotReady: 'Saral is not ready yet. Try again in a moment.',
-  micError: 'Could not use the microphone. Check permission and try again.',
-  grantMicPermission: 'Allow microphone access',
-} as const;
+export type { StringKey } from './locales/en';
+import type { StringKey } from './locales/en';
 
-const hi: Record<keyof typeof en, string> = {
-  appName: 'सरल',
-  scan: 'स्कैन',
-  speak: 'बोलें',
-  review: 'जाँच',
-  done: 'पूरा',
-  scanPage: 'यह पेज स्कैन करें',
-  rescan: 'फिर स्कैन करें',
-  noForm: 'इस पेज पर कोई भरने योग्य जानकारी नहीं मिली।',
-  noFormTitle: 'यहाँ कोई फ़ॉर्म नहीं मिला',
-  hotkeyHint: 'किसी भी फ़ॉर्म पर Ctrl+Shift+S (मैक पर ⌘+Shift+S) दबाएँ।',
-  fieldsFound: 'जानकारियाँ मिलीं',
-  speakPrompt: 'अपने शब्दों में सरल को फ़ॉर्म के बारे में बताइए।',
-  listening: 'सुन रहा है…',
-  processing: 'काम हो रहा है…',
-  transcript: 'सरल ने यह सुना',
-  fillForm: 'फ़ॉर्म भरें',
-  confirmFill: 'जानकारी जाँचें, फिर पेज भरें।',
-  allDone: 'सरल ने फ़ॉर्म भर दिया है, भेजा नहीं है। पेज जाँचें, फिर खुद भेजें।',
-  doneTitle: 'फ़ॉर्म भर दिया गया',
-  settings: 'सेटिंग्स',
-  language: 'भाषा',
-  english: 'English',
-  hindi: 'हिंदी',
-  optional: 'वैकल्पिक',
-  required: 'ज़रूरी',
-  speakQuestion: 'सवाल सुनें',
-  stopSpeaking: 'रोकें',
-  missing: 'बाकी',
-  invalid: 'ध्यान दें',
-  filled: 'तैयार',
-  empty: 'खाली',
-  needsReview: 'जाँचें',
-  skipped: 'खुद अपलोड करें',
-  startOver: 'दूसरा पेज स्कैन करें',
-  aboutForm: 'इस फ़ॉर्म के बारे में',
-  hearExplanation: 'यह सुनें',
-  requiredInfo: 'ज़रूरी जानकारी',
-  noRequiredInfo: 'कोई जानकारी ज़रूरी नहीं है।',
-  speechHint: 'आप हिंदी, English या दोनों में बोल सकते हैं।',
-  guidedHint: 'आप एक-एक करके बता सकते हैं, या एक साथ सब कुछ बोल सकते हैं।',
-  answerThis: 'इस सवाल का जवाब दें',
-  orSayAll: 'या एक साथ सब कुछ बोलें',
-  checkValue: 'इस जानकारी को एक बार जाँच लें।',
-  requiredField: 'यह जानकारी ज़रूरी है।',
-  invalidEmail: 'ईमेल सही नहीं लग रहा। जैसे: name@example.com',
-  invalidPhone: 'मोबाइल नंबर 10 अंकों का होना चाहिए।',
-  invalidNumber: 'कृपया सही संख्या लिखें।',
-  invalidDate: 'कृपया तारीख़ 05/01/2026 जैसी लिखें।',
-  invalidTime: 'कृपया समय 10:30 जैसा लिखें।',
-  invalidOption: 'कृपया दिए गए विकल्पों में से एक चुनें।',
-  fileManual: 'यह फ़ाइल खुद अपलोड करनी होगी।',
-  scanning: 'पेज पढ़ा जा रहा है…',
-  transcribing: 'आपकी बात लिखी जा रही है…',
-  extracting: 'जवाब समझे जा रहे हैं…',
-  fillingForm: 'फ़ॉर्म भरा जा रहा है…',
-  answered: 'भर गए',
-  needsAttention: 'इन पर ध्यान दें',
-  allGood: 'बाकी सब सही है',
-  allAnswered: 'सारे सवालों के जवाब मिल गए',
-  question: 'सवाल',
-  skip: 'छोड़ें',
-  recordThisField: 'यह जवाब बोलें',
-  stopRecording: 'रिकॉर्डिंग बंद करें',
-  cancel: 'रद्द करें',
-  yes: 'हाँ',
-  optionsIntro: 'सरल को चलाने के लिए अपनी API कुंजियाँ डालें।',
-  keysStayLocal: 'कुंजियाँ इसी ब्राउज़र में रहती हैं। ये सिर्फ़ Sarvam AI और OpenRouter को भेजी जाती हैं।',
-  keyHelp: 'कुंजी नहीं है? sarvam.ai और openrouter.ai पर बनाइए।',
-  apiKeys: 'API कुंजियाँ',
-  general: 'सामान्य',
-  sarvamKeyLabel: 'Sarvam AI API कुंजी',
-  sarvamKeyHint: 'Saaras बोली को टेक्स्ट बनाने के लिए।',
-  openrouterKeyLabel: 'OpenRouter API कुंजी',
-  openrouterKeyHint: 'जवाब पहचानने और हिंदी अनुवाद के लिए।',
-  defaultLanguage: 'डिफ़ॉल्ट भाषा',
-  transcriptionModel: 'ट्रांसक्रिप्शन मॉडल',
-  extractionModel: 'एक्सट्रैक्शन मॉडल',
-  fallbackModel: 'बैकअप मॉडल',
-  advanced: 'एडवांस सेटिंग',
-  showKey: 'दिखाएँ',
-  hideKey: 'छिपाएँ',
-  saveSettings: 'सेटिंग्स सेव करें',
-  saving: 'सेव हो रहा है…',
-  savedOk: 'सेटिंग्स सेव हो गईं।',
-  loading: 'लोड हो रहा है…',
-  errorMissingKey: 'पहले सेटिंग्स में Sarvam AI और OpenRouter की API कुंजियाँ डालें।',
-  errorNetwork: 'सरल AI सेवा तक नहीं पहुँच पाया। इंटरनेट जाँचें और फिर कोशिश करें।',
-  errorApi: 'AI सेवा में कोई दिक्कत आई। कृपया फिर कोशिश करें।',
-  errorParse: 'सरल AI का जवाब समझ नहीं पाया। कृपया फिर से बोलें।',
-  errorNoTab: 'पहले कोई वेबपेज खोलें जिसमें फ़ॉर्म हो।',
-  errorNoContent: 'सरल इस पेज को नहीं पढ़ पाया। पेज रीलोड करके फिर कोशिश करें।',
-  errorUnknown: 'कुछ गड़बड़ हो गई। कृपया फिर कोशिश करें।',
-  errorNotReady: 'सरल अभी तैयार नहीं है। एक पल बाद कोशिश करें।',
-  micError: 'माइक्रोफ़ोन इस्तेमाल नहीं हो पाया। अनुमति जाँचें और फिर कोशिश करें।',
-  grantMicPermission: 'माइक्रोफ़ोन अनुमति दें',
+export type Language =
+  | 'en'
+  | 'hi'
+  | 'as'
+  | 'bn'
+  | 'gu'
+  | 'kn'
+  | 'kok'
+  | 'ml'
+  | 'mr'
+  | 'ne'
+  | 'od'
+  | 'pa'
+  | 'ta'
+  | 'te'
+  | 'ur';
+
+/** Metadata for each supported language. */
+export interface LanguageMeta {
+  code: Language;
+  /** Name in the language's own script. */
+  nativeName: string;
+  /** English name for accessibility / fallback. */
+  englishName: string;
+  /** BCP-47 code sent to Sarvam AI. */
+  sarvamCode: string;
+}
+
+/** All languages supported by Saral, in display order. */
+export const LANGUAGES: readonly LanguageMeta[] = [
+  { code: 'en', nativeName: 'English', englishName: 'English', sarvamCode: 'en-IN' },
+  { code: 'hi', nativeName: 'हिन्दी', englishName: 'Hindi', sarvamCode: 'hi-IN' },
+  { code: 'as', nativeName: 'অসমীয়া', englishName: 'Assamese', sarvamCode: 'as-IN' },
+  { code: 'bn', nativeName: 'বাংলা', englishName: 'Bengali', sarvamCode: 'bn-IN' },
+  { code: 'gu', nativeName: 'ગુજરાતી', englishName: 'Gujarati', sarvamCode: 'gu-IN' },
+  { code: 'kn', nativeName: 'ಕನ್ನಡ', englishName: 'Kannada', sarvamCode: 'kn-IN' },
+  { code: 'kok', nativeName: 'कोंकणी', englishName: 'Konkani', sarvamCode: 'kok-IN' },
+  { code: 'ml', nativeName: 'മലയാളം', englishName: 'Malayalam', sarvamCode: 'ml-IN' },
+  { code: 'mr', nativeName: 'मराठी', englishName: 'Marathi', sarvamCode: 'mr-IN' },
+  { code: 'ne', nativeName: 'नेपाली', englishName: 'Nepali', sarvamCode: 'ne-IN' },
+  { code: 'od', nativeName: 'ଓଡ଼ିଆ', englishName: 'Odia', sarvamCode: 'od-IN' },
+  { code: 'pa', nativeName: 'ਪੰਜਾਬੀ', englishName: 'Punjabi', sarvamCode: 'pa-IN' },
+  { code: 'ta', nativeName: 'தமிழ்', englishName: 'Tamil', sarvamCode: 'ta-IN' },
+  { code: 'te', nativeName: 'తెలుగు', englishName: 'Telugu', sarvamCode: 'te-IN' },
+  { code: 'ur', nativeName: 'اردو', englishName: 'Urdu', sarvamCode: 'ur-IN' },
+] as const;
+
+/** Quick lookup: language code → Sarvam BCP-47 code. */
+export const SARVAM_CODE_MAP: Record<Language, string> = Object.fromEntries(
+  LANGUAGES.map((l) => [l.code, l.sarvamCode]),
+) as Record<Language, string>;
+
+const TRANSLATIONS: Record<Language, Record<StringKey, string>> = {
+  en,
+  hi,
+  as,
+  bn,
+  gu,
+  kn,
+  kok,
+  ml,
+  mr,
+  ne,
+  od,
+  pa,
+  ta,
+  te,
+  ur,
 };
 
-export type StringKey = keyof typeof en;
-
 export function t(key: StringKey, language: Language): string {
-  return language === 'hi' ? hi[key] : en[key];
+  return TRANSLATIONS[language]?.[key] ?? en[key];
 }

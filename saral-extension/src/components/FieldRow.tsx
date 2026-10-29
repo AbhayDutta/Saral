@@ -1,5 +1,6 @@
 import type { Field, FieldStatus } from '@/lib/schema/types';
 import type { Language } from '@/lib/i18n';
+import { t } from '@/lib/i18n';
 import { FieldMic } from './FieldMic';
 import { ChevronDownIcon } from './Icons';
 import { StatusBadge } from './StatusBadge';
@@ -113,7 +114,7 @@ function FieldInput({
           onChange={(event) => onChange(event.target.value)}
           className={`${shared} appearance-none pr-9`}
         >
-          <option value="">{language === 'hi' ? 'चुनें…' : 'Select…'}</option>
+          <option value="">{t('selectOption', language)}</option>
           {field.options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -148,7 +149,7 @@ function FieldInput({
           onChange={(event) => onChange(event.target.checked ? 'true' : 'false')}
           className="check"
         />
-        {language === 'hi' ? 'हाँ' : 'Yes'}
+        {t('yes', language)}
       </label>
     );
   }

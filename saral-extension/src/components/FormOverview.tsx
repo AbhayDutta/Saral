@@ -15,15 +15,12 @@ export function FormOverview({
 }) {
   const { supported, speaking, speak, stop } = useSpeech(language);
 
-  const title = schema.title || (language === 'hi' ? 'यह फ़ॉर्म' : 'this form');
+  const title = schema.title || t('thisForm', language);
   const required = schema.fields.filter((field) => field.required);
   const shown = required.slice(0, MAX_CHIPS);
   const hidden = required.slice(MAX_CHIPS);
 
-  const purpose =
-    language === 'hi'
-      ? schema.purpose || `यह "${title}" फ़ॉर्म भरने के लिए है।`
-      : `This form is for "${title}".`;
+  const purpose = schema.purpose || (schema.title ? schema.title : t('fillThisForm', language));
 
   const requiredText = required.length
     ? `${t('requiredInfo', language)}: ${required.map((field) => field.label).join(', ')}`

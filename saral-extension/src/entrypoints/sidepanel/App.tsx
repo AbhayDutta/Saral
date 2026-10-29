@@ -4,7 +4,7 @@ import { Banner } from '@/components/Banner';
 import { FieldRow } from '@/components/FieldRow';
 import { FormOverview } from '@/components/FormOverview';
 import { GuidedPrompt } from '@/components/GuidedPrompt';
-import { LanguageToggle } from '@/components/LanguageToggle';
+import { LanguageSelect } from '@/components/LanguageSelect';
 import { ReviewSummary } from '@/components/ReviewSummary';
 import { TranscriptPanel } from '@/components/TranscriptPanel';
 import { VoiceRecorder } from '@/components/VoiceRecorder';
@@ -96,10 +96,10 @@ export default function App() {
       languageRef.current = targetLang;
       setLanguage(targetLang);
 
-      if (targetLang === 'hi') {
-        void translateLabels(result);
-      } else {
+      if (targetLang === 'en') {
         restoreOriginalLabels();
+      } else {
+        void translateLabels(result, targetLang);
       }
     } catch (caught) {
       setError(toUserMessage(caught, languageRef.current));
@@ -112,23 +112,27 @@ export default function App() {
     languageRef.current = next;
     setLanguage(next);
 
-    if (next === 'hi') {
-      const base = originalSchemaRef.current ?? schema;
-      if (base) void translateLabels(base);
-    } else {
+    if (next === 'en') {
       restoreOriginalLabels();
+    } else {
+      const base = originalSchemaRef.current ?? schema;
+      if (base) void translateLabels(base, next);
     }
   }
 
-  async function translateLabels(base: Schema): Promise<void> {
+  async function translateLabels(
+    base: Schema,
+    targetLang: Language = languageRef.current,
+  ): Promise<void> {
     try {
       const translated = await requestBackground<Schema>({
         type: 'TRANSLATE',
         schema: base,
+        targetLanguage: targetLang,
       });
 
       const current = useFormStore.getState().schema;
-      if (languageRef.current !== 'hi' || !current || current.url !== base.url) return;
+      if (languageRef.current !== targetLang || !current || current.url !== base.url) return;
 
       const fields: Record<
         string,
@@ -361,7 +365,7 @@ export default function App() {
                 : t('scanPage', language)}
             </p>
           </div>
-          <LanguageToggle value={language} onChange={changeLanguage} />
+          <LanguageSelect value={language} onChange={changeLanguage} />
         </div>
 
         {/* Steps are a real sequence, so they get a progress track:

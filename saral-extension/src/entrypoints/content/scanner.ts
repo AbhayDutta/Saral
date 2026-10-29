@@ -54,31 +54,74 @@ export function scanDocument(doc: Document = document): Schema {
   };
 }
 
+/** Map HTML lang attribute prefixes to our Language codes. */
+const LANG_PREFIX_MAP: [string, Language][] = [
+  ['hi', 'hi'],
+  ['as', 'as'],
+  ['bn', 'bn'],
+  ['gu', 'gu'],
+  ['kn', 'kn'],
+  ['kok', 'kok'],
+  ['ml', 'ml'],
+  ['mr', 'mr'],
+  ['ne', 'ne'],
+  ['or', 'od'],   // ISO 639-1 for Odia is 'or'
+  ['od', 'od'],
+  ['pa', 'pa'],
+  ['ta', 'ta'],
+  ['te', 'te'],
+  ['ur', 'ur'],
+];
+
+function matchLangPrefix(tag: string): Language | null {
+  const lower = tag.toLowerCase().trim();
+  for (const [prefix, lang] of LANG_PREFIX_MAP) {
+    if (lower === prefix || lower.startsWith(`${prefix}-`)) return lang;
+  }
+  return null;
+}
+
 export function detectPageLanguage(doc: Document = document, fields: Field[] = []): Language {
   // 1. Check <html lang="..."> and <body lang="...">
-  const htmlLang = (doc.documentElement?.getAttribute('lang') || doc.body?.getAttribute('lang') || '')
-    .toLowerCase()
-    .trim();
+  const htmlLang = doc.documentElement?.getAttribute('lang') || doc.body?.getAttribute('lang') || '';
 
-  // If text has significant Devanagari, it is Hindi regardless of default template lang="en"
-  if (hasSignificantDevanagari(doc, fields)) {
-    return 'hi';
-  }
+  // 2. Script-based detection on page content (overrides lang attr since many
+  //    Indian-language pages use a default lang="en" template).
+  const scriptLang = detectScriptLanguage(doc, fields);
+  if (scriptLang) return scriptLang;
 
-  if (htmlLang.startsWith('hi')) return 'hi';
+  // 3. Match html lang attribute
+  const fromAttr = matchLangPrefix(htmlLang);
+  if (fromAttr) return fromAttr;
 
-  // 2. Check meta tags
+  // 4. Check meta tags
   const metaLang = doc
     .querySelector('meta[http-equiv="content-language"], meta[name="language"]')
-    ?.getAttribute('content')
-    ?.toLowerCase()
-    ?.trim();
-  if (metaLang?.startsWith('hi')) return 'hi';
+    ?.getAttribute('content') ?? '';
+  const fromMeta = matchLangPrefix(metaLang);
+  if (fromMeta) return fromMeta;
 
   return 'en';
 }
 
-function hasSignificantDevanagari(doc: Document, fields: Field[]): boolean {
+/**
+ * Detect language from the Unicode script blocks used in the page text.
+ * Returns the first language whose script is significantly represented,
+ * or null if no Indian script dominates.
+ *
+ * Unicode ranges:
+ *  - Devanagari U+0900–U+097F (Hindi, Marathi, Nepali, Konkani, Sanskrit)
+ *  - Bengali/Assamese U+0980–U+09FF
+ *  - Gurmukhi (Punjabi) U+0A00–U+0A7F
+ *  - Gujarati U+0A80–U+0AFF
+ *  - Odia U+0B00–U+0B7F
+ *  - Tamil U+0B80–U+0BFF
+ *  - Telugu U+0C00–U+0C7F
+ *  - Kannada U+0C80–U+0CFF
+ *  - Malayalam U+0D00–U+0D7F
+ *  - Arabic (Urdu) U+0600–U+06FF
+ */
+function detectScriptLanguage(doc: Document, fields: Field[]): Language | null {
   let sample = doc.title || '';
   for (const field of fields) {
     sample += ` ${field.label} ${field.hint ?? ''} ${field.section ?? ''}`;
@@ -89,13 +132,37 @@ function hasSignificantDevanagari(doc: Document, fields: Field[]): boolean {
     sample += ' ' + textNodes.map((n) => n.textContent || '').join(' ');
   }
 
-  const devanagariCount = (sample.match(/[\u0900-\u097F]/g) || []).length;
   const latinCount = (sample.match(/[a-zA-Z]/g) || []).length;
 
-  if (devanagariCount > 8 && devanagariCount > latinCount * 0.25) return true;
-  if (devanagariCount > 0 && latinCount === 0) return true;
-  return false;
+  // Each entry: [regex, minimum char count, Language].
+  // Devanagari is checked but needs extra disambiguation (Hindi vs Marathi etc.).
+  const scripts: [RegExp, Language][] = [
+    [/[\u0980-\u09FF]/g, 'bn'],    // Bengali / Assamese (shared script)
+    [/[\u0A00-\u0A7F]/g, 'pa'],    // Gurmukhi → Punjabi
+    [/[\u0A80-\u0AFF]/g, 'gu'],    // Gujarati
+    [/[\u0B00-\u0B7F]/g, 'od'],    // Odia
+    [/[\u0B80-\u0BFF]/g, 'ta'],    // Tamil
+    [/[\u0C00-\u0C7F]/g, 'te'],    // Telugu
+    [/[\u0C80-\u0CFF]/g, 'kn'],    // Kannada
+    [/[\u0D00-\u0D7F]/g, 'ml'],    // Malayalam
+    [/[\u0600-\u06FF]/g, 'ur'],    // Arabic script → Urdu
+  ];
+
+  for (const [regex, lang] of scripts) {
+    const count = (sample.match(regex) || []).length;
+    if (count > 8 && count > latinCount * 0.25) return lang;
+    if (count > 0 && latinCount === 0) return lang;
+  }
+
+  // Devanagari — could be Hindi, Marathi, Nepali, or Konkani.
+  // Default to Hindi since it is by far the most common.
+  const devanagariCount = (sample.match(/[\u0900-\u097F]/g) || []).length;
+  if (devanagariCount > 8 && devanagariCount > latinCount * 0.25) return 'hi';
+  if (devanagariCount > 0 && latinCount === 0) return 'hi';
+
+  return null;
 }
+
 
 function isCandidate(element: HTMLElement): boolean {
   if (element.hasAttribute('disabled')) return false;

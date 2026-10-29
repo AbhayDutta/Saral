@@ -1,8 +1,9 @@
 import { AppError } from '../errors';
+import type { Language } from '../i18n';
 import type { Schema } from '../schema/types';
 import { getCache, setCache } from '../storage';
 import { chat } from './openrouter';
-import { TRANSLATION_SYSTEM, translationPrompt } from './prompts';
+import { translationSystem, translationPrompt } from './prompts';
 
 interface TranslatedOption {
   value?: string;
@@ -24,7 +25,7 @@ interface TranslationResult {
 
 export async function translateSchema(
   schema: Schema,
-  target: 'hi' | 'en' = 'hi',
+  target: Language = 'hi',
 ): Promise<Schema> {
   if (target === 'en') return schema;
 
@@ -46,8 +47,8 @@ export async function translateSchema(
 
   const content = await chat(
     [
-      { role: 'system', content: TRANSLATION_SYSTEM },
-      { role: 'user', content: translationPrompt(schema) },
+      { role: 'system', content: translationSystem(target) },
+      { role: 'user', content: translationPrompt(schema, target) },
     ],
     { json: true },
   );
