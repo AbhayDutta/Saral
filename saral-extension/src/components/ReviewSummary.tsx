@@ -13,31 +13,52 @@ export function ReviewSummary({
   statuses: Record<string, FieldStatus>;
   language: Language;
 }) {
+  const total = schema.fields.length;
   const filled = schema.fields.filter((field) => Boolean(values[field.id])).length;
   const missing = schema.fields.filter((field) => field.required && !values[field.id]);
   const flagged = schema.fields.filter(
     (field) => statuses[field.id] === 'invalid' || statuses[field.id] === 'needs-review',
   );
+  const percent = total ? Math.round((filled / total) * 100) : 0;
 
   return (
-    <section className="card px-4 py-3.5">
-      <div className="grid grid-cols-3 divide-x divide-slate-100 text-center">
-        <Stat value={filled} label={t('filled', language)} variant="filled" />
-        <Stat value={missing.length} label={t('missing', language)} variant="missing" />
-        <Stat value={flagged.length} label={t('invalid', language)} variant="flagged" />
+    <section className="card px-4 pb-3.5 pt-3">
+      <div className="grid grid-cols-3 divide-x divide-ink-900/[0.07]">
+        <Stat value={filled} label={t('filled', language)} tone="filled" />
+        <Stat value={missing.length} label={t('missing', language)} tone="missing" />
+        <Stat value={flagged.length} label={t('invalid', language)} tone="flagged" />
+      </div>
+
+      <div
+        className="mt-2.5 h-1 overflow-hidden rounded-full bg-ink-100"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={filled}
+      >
+        <div
+          className="h-full rounded-full bg-brand-500 transition-[width] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+          style={{ width: `${percent}%` }}
+        />
       </div>
 
       {(missing.length > 0 || flagged.length > 0) && (
-        <div className="mt-3 space-y-1 border-t border-slate-50 pt-3">
+        <div className="mt-3.5 space-y-2 border-t border-ink-900/[0.06] pt-3">
           {missing.length > 0 && (
-            <p className="text-[11px] text-amber-600">
-              {t('missing', language)}: {missing.map((f) => f.label).join(', ')}
-            </p>
+            <FieldList
+              label={t('missing', language)}
+              items={missing.map((field) => field.label)}
+              className="bg-amber-50 text-amber-800 ring-amber-600/20"
+              labelClass="text-amber-700"
+            />
           )}
           {flagged.length > 0 && (
-            <p className="text-[11px] text-red-500">
-              {t('invalid', language)}: {flagged.map((f) => f.label).join(', ')}
-            </p>
+            <FieldList
+              label={t('invalid', language)}
+              items={flagged.map((field) => field.label)}
+              className="bg-red-50 text-red-700 ring-red-600/15"
+              labelClass="text-red-600"
+            />
           )}
         </div>
       )}
@@ -45,30 +66,53 @@ export function ReviewSummary({
   );
 }
 
+function FieldList({
+  label,
+  items,
+  className,
+  labelClass,
+}: {
+  label: string;
+  items: string[];
+  className: string;
+  labelClass: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className={`mr-0.5 text-[12.5px] font-semibold ${labelClass}`}>{label}</span>
+      {items.map((item) => (
+        <span
+          key={item}
+          className={`inline-flex h-[22px] items-center rounded-full px-2 text-[12px] font-medium ring-1 ring-inset ${className}`}
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Stat({
   value,
   label,
-  variant,
+  tone,
 }: {
   value: number;
   label: string;
-  variant: 'filled' | 'missing' | 'flagged';
+  tone: 'filled' | 'missing' | 'flagged';
 }) {
-  const numberColor =
-    variant === 'filled'
-      ? 'text-brand-600'
-      : variant === 'missing'
-        ? value > 0
-          ? 'text-amber-500'
-          : 'text-slate-300'
-        : value > 0
-          ? 'text-red-500'
-          : 'text-slate-300';
+  const active = {
+    filled: 'text-brand-600',
+    missing: 'text-amber-600',
+    flagged: 'text-red-600',
+  }[tone];
 
   return (
     <div className="flex flex-col items-center gap-0.5 py-1">
-      <p className={`text-2xl font-bold tabular-nums ${numberColor}`}>{value}</p>
-      <p className="text-[10px] uppercase tracking-widest text-slate-400">{label}</p>
+      <p className={`text-[26px] font-semibold leading-none tabular-nums ${value > 0 ? active : 'text-ink-300'}`}>
+        {value}
+      </p>
+      <p className="text-[12.5px] text-ink-500">{label}</p>
     </div>
   );
 }

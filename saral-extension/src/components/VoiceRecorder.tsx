@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { AudioRecorder, isPermissionError, openMicPermissionTab } from '@/lib/audio';
 import type { Recording } from '@/lib/audio';
 import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
+import { Banner } from './Banner';
+import { MicIcon, StopIcon } from './Icons';
 
 interface VoiceRecorderProps {
   language: Language;
@@ -54,78 +57,97 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
     }
   }
 
+  const hi = language === 'hi';
+
   return (
-    <div className="flex flex-col items-center gap-4 py-8">
-      {/* Mic button */}
-      <div className="relative">
+    <div className="flex flex-col items-center gap-4 px-4 py-8">
+      {/* Mic: two offset ripples while recording, so it feels like it is listening. */}
+      <div className="relative grid h-24 w-24 place-items-center">
         {recording && (
-          <span className="absolute inset-0 rounded-full bg-red-400 opacity-20 animate-ping" />
+          <>
+            <span aria-hidden="true" className="rec-ripple absolute h-[72px] w-[72px] rounded-full bg-red-500/30" />
+            <span
+              aria-hidden="true"
+              className="rec-ripple absolute h-[72px] w-[72px] rounded-full bg-red-500/30"
+              style={{ animationDelay: '0.95s' }}
+            />
+          </>
         )}
         <button
           type="button"
           onClick={() => void toggle()}
           disabled={disabled}
-          aria-label={recording ? 'Stop recording' : 'Start recording'}
-          className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all duration-200 ${
+          data-recording={recording}
+          aria-pressed={recording}
+          aria-label={
             recording
-              ? 'bg-red-500 shadow-lg shadow-red-200'
-              : 'bg-brand-600 shadow-lg shadow-brand-200 hover:bg-brand-700 disabled:bg-slate-200 disabled:shadow-none'
-          }`}
+              ? hi ? 'रिकॉर्डिंग रोकें' : 'Stop recording'
+              : hi ? 'रिकॉर्डिंग शुरू करें' : 'Start recording'
+          }
+          className="mic-btn"
         >
-          {recording ? (
-            /* Stop square */
-            <span className="h-5 w-5 rounded-sm bg-white" />
-          ) : (
-            /* Mic icon */
-            <svg viewBox="0 0 24 24" fill="white" className="h-8 w-8">
-              <path d="M12 1a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4Z" />
-              <path fillRule="evenodd" d="M5 11a1 1 0 0 1 1 1 6 6 0 0 0 12 0 1 1 0 1 1 2 0 8 8 0 0 1-7 7.938V22h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.062A8 8 0 0 1 4 12a1 1 0 0 1 1-1Z" clipRule="evenodd" />
-            </svg>
-          )}
+          {recording ? <StopIcon className="h-6 w-6" /> : <MicIcon className="h-8 w-8" strokeWidth={1.5} />}
         </button>
       </div>
 
-      {/* Status label */}
-      <p className="text-center text-[13px] text-slate-500">
-        {recording
-          ? `${t('listening', language)} ${formatTime(seconds)}`
-          : t('speakPrompt', language)}
-      </p>
+      {/* Status. Fixed height so the layout doesn't jump when recording starts. */}
+      <div className="flex min-h-[52px] flex-col items-center gap-2" aria-live="polite">
+        {recording ? (
+          <>
+            <p className="flex items-center gap-2 text-[14px] font-semibold text-ink-900">
+              <span aria-hidden="true" className="rec-dot h-1.5 w-1.5 rounded-full bg-red-500" />
+              {t('listening', language)}
+              <span className="font-medium tabular-nums text-ink-500">{formatTime(seconds)}</span>
+            </p>
+            <Waveform />
+          </>
+        ) : (
+          <p className="max-w-[17rem] text-center text-[14px] leading-snug text-ink-500">
+            {t('speakPrompt', language)}
+          </p>
+        )}
+      </div>
 
-      {/* Waveform */}
-      {recording && <Waveform />}
       {error && (
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-center text-xs text-red-600">{error}</p>
-          {needsPermission && (
-            <button
-              type="button"
-              onClick={openMicPermissionTab}
-              className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-emerald-700"
-            >
-              {t('grantMicPermission', language)}
-            </button>
-          )}
+        <div className="w-full">
+          <Banner
+            tone="error"
+            message={error}
+            onDismiss={() => setError(null)}
+            action={
+              needsPermission
+                ? {
+                    label: t('grantMicPermission', language),
+                    onClick: () => {
+                      void openMicPermissionTab();
+                    },
+                  }
+                : undefined
+            }
+          />
         </div>
       )}
     </div>
   );
 }
 
+const BARS = 21;
+
+/** Bell-shaped envelope with desynchronised bars: reads as speech, not a loader. */
 function Waveform() {
+  const mid = (BARS - 1) / 2;
   return (
-    <div className="flex h-6 items-end gap-0.5" aria-hidden="true">
-      {Array.from({ length: 12 }, (_, index) => (
-        <span
-          key={index}
-          className="w-1 rounded-full bg-brand-500 animate-pulse"
-          style={{
-            height: `${6 + ((index * 5) % 16)}px`,
-            opacity: 0.4 + (index % 3) * 0.2,
-            animationDelay: `${index * 60}ms`,
-          }}
-        />
-      ))}
+    <div className="flex h-7 items-center gap-[3px] text-brand-500" aria-hidden="true">
+      {Array.from({ length: BARS }, (_, index) => {
+        const weight = 1 - Math.abs(index - mid) / mid;
+        const style = {
+          height: `${8 + Math.round(weight * 18)}px`,
+          opacity: 0.4 + weight * 0.6,
+          '--d': `${0.85 + ((index * 7) % 5) * 0.13}s`,
+          '--delay': `${-((index * 113) % 800)}ms`,
+        } as CSSProperties;
+        return <span key={index} className="wave-bar" style={style} />;
+      })}
     </div>
   );
 }

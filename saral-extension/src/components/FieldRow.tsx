@@ -1,6 +1,7 @@
 import type { Field, FieldStatus } from '@/lib/schema/types';
 import type { Language } from '@/lib/i18n';
 import { FieldMic } from './FieldMic';
+import { ChevronDownIcon } from './Icons';
 import { StatusBadge } from './StatusBadge';
 
 interface FieldRowProps {
@@ -13,6 +14,11 @@ interface FieldRowProps {
   onRecorded: (blob: Blob) => void;
 }
 
+const MESSAGE_TONE: Partial<Record<FieldStatus, string>> = {
+  invalid: 'text-red-600',
+  'needs-review': 'text-amber-700',
+};
+
 export function FieldRow({
   field,
   value,
@@ -22,38 +28,50 @@ export function FieldRow({
   onChange,
   onRecorded,
 }: FieldRowProps) {
+  const hintId = `${field.id}-hint`;
+  const messageId = `${field.id}-message`;
+  const describedBy =
+    [field.hint ? hintId : '', message ? messageId : ''].filter(Boolean).join(' ') || undefined;
+
   return (
-    <div className="card px-4 py-3.5">
-      {/* Label row */}
-      <div className="flex items-start justify-between gap-2">
-        <label htmlFor={field.id} className="text-[13px] font-semibold text-slate-700 leading-tight">
+    // The card's outline carries the status (see .card[data-status] in premium.css).
+    <div className="card px-3.5 pb-3.5 pt-3" data-status={status}>
+      <div className="flex items-start justify-between gap-3">
+        <label htmlFor={field.id} className="text-[14px] font-semibold leading-tight text-ink-800">
           {field.label}
-          {field.required && <span className="ml-0.5 text-brand-500">*</span>}
+          {field.required && (
+            <span className="ml-1 text-brand-600" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
         <StatusBadge status={status} language={language} />
       </div>
 
       {field.hint && (
-        <p className="mt-0.5 text-[11px] text-slate-400">{field.hint}</p>
+        <p id={hintId} className="mt-0.5 text-[12.5px] leading-snug text-ink-400">
+          {field.hint}
+        </p>
       )}
 
-      {/* Input row */}
       <div className="mt-2.5 flex items-start gap-2">
         <div className="min-w-0 flex-1">
-          <FieldInput field={field} value={value} onChange={onChange} />
+          <FieldInput
+            field={field}
+            value={value}
+            language={language}
+            invalid={status === 'invalid'}
+            describedBy={describedBy}
+            onChange={onChange}
+          />
         </div>
         <FieldMic onRecorded={onRecorded} language={language} />
       </div>
 
       {message && (
         <p
-          className={`mt-1.5 text-[11px] ${
-            status === 'invalid'
-              ? 'text-red-500'
-              : status === 'needs-review'
-                ? 'text-amber-600'
-                : 'text-slate-400'
-          }`}
+          id={messageId}
+          className={`mt-2 text-[12.5px] leading-snug ${MESSAGE_TONE[status] ?? 'text-ink-500'}`}
         >
           {message}
         </p>
@@ -65,58 +83,72 @@ export function FieldRow({
 function FieldInput({
   field,
   value,
+  language,
+  invalid,
+  describedBy,
   onChange,
 }: {
   field: Field;
   value: string;
+  language: Language;
+  invalid: boolean;
+  describedBy?: string;
   onChange: (value: string) => void;
 }) {
   const shared = 'input-base';
+  const common = {
+    id: field.id,
+    name: field.name || field.id,
+    'aria-invalid': invalid || undefined,
+    'aria-required': field.required || undefined,
+    'aria-describedby': describedBy,
+  } as const;
 
   if (field.options && field.options.length > 0 && field.type !== 'checkbox') {
     return (
-      <select
-        id={field.id}
-        name={field.name || field.id}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className={`${shared} appearance-none`}
-      >
-        <option value="">Select…</option>
-        {field.options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          {...common}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className={`${shared} appearance-none pr-9`}
+        >
+          <option value="">{language === 'hi' ? 'चुनें…' : 'Select…'}</option>
+          {field.options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {/* appearance-none removes the native arrow, so draw one. */}
+        <ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+      </div>
     );
   }
 
   if (field.type === 'textarea') {
     return (
       <textarea
-        id={field.id}
-        name={field.name || field.id}
+        {...common}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         rows={3}
-        className={shared}
+        className={`${shared} resize-none`}
       />
     );
   }
 
   if (field.type === 'checkbox') {
     return (
-      <label className="flex items-center gap-2 text-[13px] text-slate-700">
+      <label className="flex min-h-[40px] cursor-pointer items-center gap-2.5 text-[14px] text-ink-700">
         <input
-          id={field.id}
-          name={field.name || field.id}
+          {...common}
           type="checkbox"
           checked={value === 'true'}
           onChange={(event) => onChange(event.target.checked ? 'true' : 'false')}
-          className="h-4 w-4 rounded border-slate-300 accent-brand-600"
+          className="check"
         />
-        Yes
+        {language === 'hi' ? 'हाँ' : 'Yes'}
       </label>
     );
   }
@@ -132,8 +164,7 @@ function FieldInput({
 
   return (
     <input
-      id={field.id}
-      name={field.name || field.id}
+      {...common}
       type={inputType}
       value={value}
       onChange={(event) => onChange(event.target.value)}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { FileSearch, Mic, RotateCw, Settings } from 'lucide-react';
 import { Banner } from '@/components/Banner';
 import { FieldRow } from '@/components/FieldRow';
 import { FormOverview } from '@/components/FormOverview';
@@ -26,8 +27,6 @@ const STEPS: Screen[] = ['scan', 'speak', 'review', 'done'];
 
 const PRIMARY = 'btn-primary';
 const SECONDARY = 'btn-secondary';
-
-
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('scan');
@@ -348,15 +347,15 @@ export default function App() {
   const currentStepIndex = STEPS.indexOf(screen);
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-dvh flex-col bg-ink-50">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-10 bg-white px-4 pb-0 pt-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-[17px] font-bold tracking-tight text-slate-900">
+      <header className="sticky top-0 z-20 border-b border-ink-900/[0.06] bg-white/85 px-4 pt-4 backdrop-blur-md">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="truncate text-[19px] font-semibold leading-tight text-ink-900">
               {t('appName', language)}
             </h1>
-            <p className="mt-0.5 text-[11px] text-slate-400">
+            <p className="mt-0.5 text-[12.5px] text-ink-500">
               {schema
                 ? `${schema.fields.length} ${t('fieldsFound', language)}`
                 : t('scanPage', language)}
@@ -365,63 +364,53 @@ export default function App() {
           <LanguageToggle value={language} onChange={changeLanguage} />
         </div>
 
-        {/* Step indicator — thin progress bar + labels */}
-        <nav className="mt-4" aria-label="Steps">
-          {/* Progress track */}
-          <div className="relative flex items-center">
-            {STEPS.map((step, index) => {
-              const isActive = screen === step;
-              const isCompleted = index < currentStepIndex;
-              const isDisabled = !schema && step !== 'scan';
-              return (
-                <button
-                  key={step}
-                  type="button"
-                  onClick={() => setScreen(step)}
-                  disabled={isDisabled}
-                  className={`flex flex-1 flex-col items-center gap-1.5 pb-3 text-center transition disabled:pointer-events-none`}
+        {/* Steps are a real sequence, so they get a progress track:
+            done = soft jade, current = solid jade, upcoming = grey. */}
+        <nav className="mt-3.5 grid grid-cols-4 gap-1.5" aria-label="Steps">
+          {STEPS.map((step, index) => {
+            const isActive = screen === step;
+            const isCompleted = index < currentStepIndex;
+            const isDisabled = !schema && step !== 'scan';
+
+            return (
+              <button
+                key={step}
+                type="button"
+                onClick={() => setScreen(step)}
+                disabled={isDisabled}
+                aria-current={isActive ? 'step' : undefined}
+                className="group flex flex-col gap-1.5 pb-3 text-left disabled:pointer-events-none"
+              >
+                <span
+                  className={`h-[3px] rounded-full transition-colors duration-300 ${
+                    isActive ? 'bg-brand-600' : isCompleted ? 'bg-brand-300' : 'bg-ink-200'
+                  }`}
+                />
+                <span
+                  className={`text-[13px] leading-none transition-colors ${
+                    isActive
+                      ? 'font-semibold text-ink-900'
+                      : isCompleted
+                        ? 'font-medium text-brand-700'
+                        : isDisabled
+                          ? 'text-ink-300'
+                          : 'text-ink-500 group-hover:text-ink-800'
+                  }`}
                 >
-                  {/* Dot */}
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
-                      isCompleted
-                        ? 'bg-brand-600 text-white'
-                        : isActive
-                          ? 'bg-brand-600 text-white ring-4 ring-brand-600/20'
-                          : 'bg-slate-100 text-slate-400'
-                    }`}
-                  >
-                    {isCompleted ? '✓' : index + 1}
-                  </span>
-                  {/* Label */}
-                  <span
-                    className={`text-[10px] font-semibold uppercase tracking-widest transition-colors ${
-                      isActive ? 'text-brand-600' : isDisabled ? 'text-slate-300' : 'text-slate-400'
-                    }`}
-                  >
-                    {t(step, language)}
-                  </span>
-                </button>
-              );
-            })}
-            {/* Connecting line beneath dots */}
-            <div className="absolute top-2.5 left-0 right-0 -z-10 mx-[10%] h-px bg-slate-100" />
-          </div>
-          {/* Active underline */}
-          <div className="h-px bg-slate-100" />
+                  {t(step, language)}
+                </span>
+              </button>
+            );
+          })}
         </nav>
+
+        {busy && <div className="busy-bar" aria-hidden="true" />}
       </header>
 
-      {/* ── Main ── */}
-      <main className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
-        {error && (
-          <Banner tone="error" message={error} onDismiss={() => setError(null)} />
-        )}
-        {busy && (
-          <div className="animate-pulse">
-            <Banner tone="info" message={t('processing', language)} />
-          </div>
-        )}
+      {/* ── Main ── (no overflow here: it would break the sticky action bar) */}
+      <main className="flex-1 space-y-4 px-4 py-4">
+        {error && <Banner tone="error" message={error} onDismiss={() => setError(null)} />}
+        {busy && <Banner tone="info" message={t('processing', language)} />}
 
         {/* SCAN */}
         {screen === 'scan' && (
@@ -429,14 +418,18 @@ export default function App() {
             {schema ? (
               <FormOverview schema={schema} language={language} />
             ) : (
-              <div className="flex flex-col items-center gap-3 py-10 text-center">
-                <span className="text-4xl opacity-30">📋</span>
-                <p className="text-sm font-medium text-slate-500">{t('noForm', language)}</p>
-                <p className="text-xs text-slate-400">
-                  {language === 'hi'
-                    ? 'किसी वेब फ़ॉर्म पर जाएं और स्कैन करें।'
-                    : 'Navigate to a web form, then tap Scan.'}
-                </p>
+              <div className="flex flex-col items-center gap-4 px-6 py-12 text-center">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-ink-400 shadow-sm ring-1 ring-ink-900/[0.07]">
+                  <FileSearch className="h-5 w-5" strokeWidth={1.6} />
+                </span>
+                <div className="space-y-1">
+                  <p className="text-[15px] font-semibold text-ink-800">{t('noForm', language)}</p>
+                  <p className="mx-auto max-w-[17rem] text-[13.5px] leading-snug text-ink-500">
+                    {language === 'hi'
+                      ? 'किसी वेब फ़ॉर्म पर जाएं और स्कैन करें।'
+                      : 'Navigate to a web form, then tap Scan.'}
+                  </p>
+                </div>
               </div>
             )}
 
@@ -445,16 +438,18 @@ export default function App() {
                 type="button"
                 onClick={() => setScreen('speak')}
                 disabled={!schema || schema.fields.length === 0}
-                className={PRIMARY}
+                className={`${PRIMARY} w-full`}
               >
+                <Mic className="h-[18px] w-[18px]" strokeWidth={1.8} />
                 {t('speak', language)}
               </button>
               <button
                 type="button"
                 onClick={() => void scanPage()}
                 disabled={busy}
-                className={SECONDARY}
+                className={`${SECONDARY} w-full`}
               >
+                <RotateCw className={`h-4 w-4 ${busy ? 'animate-spin' : ''}`} strokeWidth={1.8} />
                 {schema ? t('rescan', language) : t('scanPage', language)}
               </button>
             </div>
@@ -476,7 +471,7 @@ export default function App() {
             )}
 
             <div className="card overflow-hidden">
-              <p className="border-b border-slate-50 px-4 py-2.5 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <p className="border-b border-ink-900/[0.06] px-4 py-2.5 text-center text-[13px] font-medium text-ink-500">
                 {t('orSayAll', language)}
               </p>
               <VoiceRecorder
@@ -492,7 +487,7 @@ export default function App() {
               type="button"
               onClick={() => setScreen('review')}
               disabled={!schema}
-              className={SECONDARY}
+              className={`${SECONDARY} w-full`}
             >
               {t('review', language)}
             </button>
@@ -509,9 +504,9 @@ export default function App() {
               language={language}
             />
 
-            <p className="text-[12px] text-slate-400">{t('confirmFill', language)}</p>
+            <p className="px-0.5 text-[13px] leading-snug text-ink-500">{t('confirmFill', language)}</p>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {schema.fields.map((field) => {
                 const validation = validateField(
                   field,
@@ -545,15 +540,8 @@ export default function App() {
 
             <TranscriptPanel transcript={transcript} language={language} />
 
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={() => void fillForm()}
-                disabled={busy}
-                className={PRIMARY}
-              >
-                {t('fillForm', language)}
-              </button>
+            {/* Pinned, so "Fill form" is always in reach however long the form is. */}
+            <div className="action-bar flex gap-2">
               <button
                 type="button"
                 onClick={() => setScreen('speak')}
@@ -561,27 +549,49 @@ export default function App() {
               >
                 {t('speak', language)}
               </button>
+              <button
+                type="button"
+                onClick={() => void fillForm()}
+                disabled={busy}
+                className={`${PRIMARY} flex-1`}
+              >
+                {t('fillForm', language)}
+              </button>
             </div>
           </section>
         )}
 
         {/* DONE */}
         {screen === 'done' && (
-          <section className="flex flex-col items-center gap-5 py-10 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50">
-              <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8 stroke-brand-600" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
+          <section className="flex flex-col items-center gap-6 px-2 pb-6 pt-14 text-center">
+            <div className="relative grid h-24 w-24 place-items-center">
+              <span aria-hidden="true" className="done-ring absolute inset-0 rounded-full bg-brand-500/15" />
+              <span className="grid h-16 w-16 place-items-center rounded-full bg-brand-600 shadow-[0_16px_30px_-12px_rgb(21_125_93/0.8)]">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth={2.6}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-8 w-8"
+                  aria-hidden="true"
+                >
+                  <path className="check-draw" pathLength={1} d="M5 12.5 10 17.5 19 7" />
+                </svg>
+              </span>
             </div>
-            <div className="space-y-1">
-              <p className="text-base font-bold text-slate-900">{t('doneTitle', language)}</p>
-              <p className="text-[13px] leading-relaxed text-slate-500">{t('allDone', language)}</p>
+            <div className="space-y-1.5">
+              <p className="text-[21px] font-semibold leading-tight text-ink-900">{t('doneTitle', language)}</p>
+              <p className="mx-auto max-w-[18rem] text-[14.5px] leading-relaxed text-ink-500">
+                {t('allDone', language)}
+              </p>
             </div>
             <button
               type="button"
               onClick={() => void scanPage()}
               disabled={busy}
-              className={PRIMARY}
+              className={`${PRIMARY} w-full`}
             >
               {t('startOver', language)}
             </button>
@@ -590,12 +600,13 @@ export default function App() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-slate-50 bg-white px-4 py-3">
+      <footer className="border-t border-ink-900/[0.06] bg-white px-4 py-2">
         <button
           type="button"
           onClick={() => void browser.runtime.openOptionsPage()}
-          className="text-[12px] font-medium text-slate-400 hover:text-slate-700 transition-colors"
+          className="btn-ghost -ml-2.5"
         >
+          <Settings className="h-4 w-4" strokeWidth={1.7} />
           {t('settings', language)}
         </button>
       </footer>
