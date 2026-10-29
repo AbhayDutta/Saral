@@ -50,18 +50,28 @@ export default function App() {
   const applyLocalization = useFormStore((state) => state.applyLocalization);
 
   useEffect(() => {
-    void getSettings()
-      .then((settings) => {
-        languageRef.current = settings.defaultLanguage;
-        setLanguage(settings.defaultLanguage);
-        return scanPage(settings.defaultLanguage);
-      })
-      .catch(() => scanPage());
-    // Scan once when the panel opens.
+    void scanPage();
+
+    const handleTabSwitch = () => {
+      // Re-scan when user switches tabs to adapt language and schema
+      void scanPage();
+    };
+
+    const tabsApi =
+      typeof browser !== 'undefined' && browser.tabs
+        ? browser.tabs
+        : (globalThis as unknown as { chrome?: { tabs?: typeof browser.tabs } }).chrome?.tabs;
+
+    if (tabsApi?.onActivated) {
+      tabsApi.onActivated.addListener(handleTabSwitch);
+      return () => {
+        tabsApi.onActivated.removeListener(handleTabSwitch);
+      };
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function scanPage(displayLanguage: Language = languageRef.current): Promise<void> {
+  async function scanPage(displayLanguage?: Language): Promise<void> {
     setBusy(true);
     setError(null);
     setTranscript('');
@@ -72,7 +82,26 @@ export default function App() {
       setSchema(result);
       setScreen('scan');
 
-      if (displayLanguage === 'hi') void translateLabels(result);
+      const settings = await getSettings().catch(() => null);
+      const pref = settings?.defaultLanguage ?? 'auto';
+
+      let targetLang: Language;
+      if (displayLanguage) {
+        targetLang = displayLanguage;
+      } else if (pref === 'auto') {
+        targetLang = result.pageLanguage ?? 'en';
+      } else {
+        targetLang = pref;
+      }
+
+      languageRef.current = targetLang;
+      setLanguage(targetLang);
+
+      if (targetLang === 'hi') {
+        void translateLabels(result);
+      } else {
+        restoreOriginalLabels();
+      }
     } catch (caught) {
       setError(toUserMessage(caught, languageRef.current));
     } finally {
@@ -83,7 +112,6 @@ export default function App() {
   function changeLanguage(next: Language): void {
     languageRef.current = next;
     setLanguage(next);
-    void saveSettings({ defaultLanguage: next }).catch(() => {});
 
     if (next === 'hi') {
       const base = originalSchemaRef.current ?? schema;
@@ -178,16 +206,18 @@ export default function App() {
 
     try {
       const audioBase64 = await blobToBase64(recording.blob);
+      const activeLang = languageRef.current;
       const text = await requestBackground<string>({
         type: 'TRANSCRIBE',
         audioBase64,
         mimeType: recording.mimeType,
+        language: activeLang,
       });
 
       setTranscript(text);
 
       if (!text.trim()) {
-        setError(t('errorParse', languageRef.current));
+        setError(t('errorParse', activeLang));
         return;
       }
 
@@ -195,10 +225,11 @@ export default function App() {
         type: 'EXTRACT',
         schema,
         transcript: text,
+        targetLanguage: activeLang,
       });
 
       if (Object.keys(extracted.values).length === 0) {
-        setError(t('errorParse', languageRef.current));
+        setError(t('errorParse', activeLang));
         return;
       }
 
@@ -219,10 +250,12 @@ export default function App() {
 
     try {
       const audioBase64 = await blobToBase64(blob);
+      const activeLang = languageRef.current;
       const text = await requestBackground<string>({
         type: 'TRANSCRIBE',
         audioBase64,
         mimeType: blob.type || 'audio/webm',
+        language: activeLang,
       });
 
       setTranscript(text);
@@ -231,6 +264,7 @@ export default function App() {
         type: 'EXTRACT',
         schema: { ...schema, fields: [field] },
         transcript: text,
+        targetLanguage: activeLang,
       });
 
       const raw = extracted.values[field.id];

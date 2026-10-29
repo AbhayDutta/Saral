@@ -1,4 +1,5 @@
 import type { Field, FieldOption, FieldType, Schema } from '../../lib/schema/types';
+import type { Language } from '../../lib/i18n';
 import { isSensitiveField } from './sensitive';
 
 const SKIP_INPUT_TYPES = new Set(['hidden', 'submit', 'button', 'reset', 'image']);
@@ -42,12 +43,58 @@ export function scanDocument(doc: Document = document): Schema {
     });
   });
 
+  const pageLanguage = detectPageLanguage(doc, fields);
+
   return {
     url: doc.location?.href ?? '',
     title: doc.title,
     fields,
     scannedAt: Date.now(),
+    pageLanguage,
   };
+}
+
+export function detectPageLanguage(doc: Document = document, fields: Field[] = []): Language {
+  // 1. Check <html lang="..."> and <body lang="...">
+  const htmlLang = (doc.documentElement?.getAttribute('lang') || doc.body?.getAttribute('lang') || '')
+    .toLowerCase()
+    .trim();
+
+  // If text has significant Devanagari, it is Hindi regardless of default template lang="en"
+  if (hasSignificantDevanagari(doc, fields)) {
+    return 'hi';
+  }
+
+  if (htmlLang.startsWith('hi')) return 'hi';
+
+  // 2. Check meta tags
+  const metaLang = doc
+    .querySelector('meta[http-equiv="content-language"], meta[name="language"]')
+    ?.getAttribute('content')
+    ?.toLowerCase()
+    ?.trim();
+  if (metaLang?.startsWith('hi')) return 'hi';
+
+  return 'en';
+}
+
+function hasSignificantDevanagari(doc: Document, fields: Field[]): boolean {
+  let sample = doc.title || '';
+  for (const field of fields) {
+    sample += ` ${field.label} ${field.hint ?? ''} ${field.section ?? ''}`;
+  }
+
+  if (sample.trim().length < 40) {
+    const textNodes = Array.from(doc.querySelectorAll('h1, h2, h3, p, label, button, a')).slice(0, 15);
+    sample += ' ' + textNodes.map((n) => n.textContent || '').join(' ');
+  }
+
+  const devanagariCount = (sample.match(/[\u0900-\u097F]/g) || []).length;
+  const latinCount = (sample.match(/[a-zA-Z]/g) || []).length;
+
+  if (devanagariCount > 8 && devanagariCount > latinCount * 0.25) return true;
+  if (devanagariCount > 0 && latinCount === 0) return true;
+  return false;
 }
 
 function isCandidate(element: HTMLElement): boolean {

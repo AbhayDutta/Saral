@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AudioRecorder } from '@/lib/audio';
+import { AudioRecorder, isPermissionError, openMicPermissionTab } from '@/lib/audio';
 import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
 
@@ -15,12 +15,14 @@ export function FieldMic({
   const recorder = useRef<AudioRecorder | null>(null);
   const [recording, setRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [needsPermission, setNeedsPermission] = useState(false);
 
   useEffect(() => () => recorder.current?.cancel(), []);
 
   async function toggle(): Promise<void> {
     if (disabled) return;
     setError(null);
+    setNeedsPermission(false);
 
     try {
       if (recording) {
@@ -39,6 +41,7 @@ export function FieldMic({
       setRecording(false);
       recorder.current = null;
       setError(t('micError', language));
+      setNeedsPermission(isPermissionError(caught));
       console.warn(caught);
     }
   }
@@ -59,7 +62,20 @@ export function FieldMic({
       >
         {recording ? '■' : '🎙'}
       </button>
-      {error && <span className="mt-1 text-[10px] text-red-600">{error}</span>}
+      {error && (
+        <div className="mt-1 flex flex-col items-center gap-1 text-center">
+          <span className="text-[10px] text-red-600">{error}</span>
+          {needsPermission && (
+            <button
+              type="button"
+              onClick={openMicPermissionTab}
+              className="rounded bg-emerald-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-emerald-700"
+            >
+              {t('grantMicPermission', language)}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import type { Language } from '../i18n';
+
 export type FieldType =
   | 'text'
   | 'email'
@@ -37,4 +39,5 @@ export interface Schema {
   purpose?: string;
   fields: Field[];
   scannedAt: number;
+  pageLanguage?: Language;
 }

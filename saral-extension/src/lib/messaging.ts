@@ -1,5 +1,6 @@
 import { AppError } from './errors';
 import type { ErrorCode } from './errors';
+import type { Language } from './i18n';
 import type { FieldStatus, Schema } from './schema/types';
 
 export type ExtensionResponse<T> =
@@ -9,7 +10,7 @@ export type ExtensionResponse<T> =
 export type PanelRequest =
   | { type: 'SCAN_PAGE' }
   | { type: 'TRANSCRIBE'; audioBase64: string; mimeType: string; language?: string }
-  | { type: 'EXTRACT'; schema: Schema; transcript: string }
+  | { type: 'EXTRACT'; schema: Schema; transcript: string; targetLanguage?: Language }
   | { type: 'TRANSLATE'; schema: Schema }
   | { type: 'FILL'; schema: Schema; values: Record<string, string> }
   | {
