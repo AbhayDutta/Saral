@@ -56,7 +56,7 @@ export function Navbar() {
         <NavItems items={navItems} />
         <div className="relative z-20 flex items-center gap-3">
           <NavbarButton
-            href="#install"
+            href="https://github.com/AbhayDutta/Saral"
             variant="primary"
             className="rounded-full px-5 py-2.5 text-[13px] font-semibold shadow-[0_0_24px_rgba(52,211,153,0.25)]"
           >

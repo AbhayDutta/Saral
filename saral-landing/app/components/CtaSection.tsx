@@ -3,7 +3,7 @@ import { EdgeIcon, ArrowRightIcon } from "./Icons";
 
 export function CtaSection() {
   return (
-    <section id="install" className="py-24 sm:py-36 bg-black text-white relative overflow-hidden font-sf border-t border-white/[0.08]">
+    <section id="install" className="py-24 sm:py-36 bg-black text-white relative overflow-hidden font-sf border-t border-white/8">
       {/* Subtle background glow */}
       <div
         aria-hidden="true"
@@ -28,7 +28,7 @@ export function CtaSection() {
         {/* Primary Download Button */}
         <div className="flex items-center justify-center">
           <a
-            href="https://github.com"
+            href="https://github.com/AbhayDutta/Saral"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full text-sm font-semibold text-zinc-950 bg-white hover:bg-zinc-100 active:scale-[0.98] transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.2)] cursor-pointer"
