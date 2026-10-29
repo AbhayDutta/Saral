@@ -14,6 +14,11 @@ export class AudioRecorder {
     return this.recorder?.state === 'recording';
   }
 
+  /** Live microphone stream, for level meters while recording. */
+  get mediaStream(): MediaStream | null {
+    return this.stream;
+  }
+
   async start(): Promise<void> {
     if (this.recorder) return;
 

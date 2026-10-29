@@ -55,27 +55,44 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
   }
 
   return (
-    <div className="flex flex-col items-center gap-3 py-6">
-      <button
-        type="button"
-        onClick={() => void toggle()}
-        disabled={disabled}
-        aria-label={recording ? 'Stop recording' : 'Start recording'}
-        className={`flex h-24 w-24 items-center justify-center rounded-full text-3xl text-white shadow-lg transition ${
-          recording
-            ? 'animate-pulse bg-red-600'
-            : 'bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300'
-        }`}
-      >
-        {recording ? '■' : '🎙'}
-      </button>
+    <div className="flex flex-col items-center gap-4 py-8">
+      {/* Mic button */}
+      <div className="relative">
+        {recording && (
+          <span className="absolute inset-0 rounded-full bg-red-400 opacity-20 animate-ping" />
+        )}
+        <button
+          type="button"
+          onClick={() => void toggle()}
+          disabled={disabled}
+          aria-label={recording ? 'Stop recording' : 'Start recording'}
+          className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all duration-200 ${
+            recording
+              ? 'bg-red-500 shadow-lg shadow-red-200'
+              : 'bg-brand-600 shadow-lg shadow-brand-200 hover:bg-brand-700 disabled:bg-slate-200 disabled:shadow-none'
+          }`}
+        >
+          {recording ? (
+            /* Stop square */
+            <span className="h-5 w-5 rounded-sm bg-white" />
+          ) : (
+            /* Mic icon */
+            <svg viewBox="0 0 24 24" fill="white" className="h-8 w-8">
+              <path d="M12 1a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4Z" />
+              <path fillRule="evenodd" d="M5 11a1 1 0 0 1 1 1 6 6 0 0 0 12 0 1 1 0 1 1 2 0 8 8 0 0 1-7 7.938V22h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.062A8 8 0 0 1 4 12a1 1 0 0 1 1-1Z" clipRule="evenodd" />
+            </svg>
+          )}
+        </button>
+      </div>
 
-      <p className="text-center text-sm text-slate-600">
+      {/* Status label */}
+      <p className="text-center text-[13px] text-slate-500">
         {recording
           ? `${t('listening', language)} ${formatTime(seconds)}`
           : t('speakPrompt', language)}
       </p>
 
+      {/* Waveform */}
       {recording && <Waveform />}
       {error && (
         <div className="flex flex-col items-center gap-2">
@@ -97,14 +114,15 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
 
 function Waveform() {
   return (
-    <div className="flex h-8 items-end gap-1" aria-hidden="true">
-      {Array.from({ length: 9 }, (_, index) => (
+    <div className="flex h-6 items-end gap-0.5" aria-hidden="true">
+      {Array.from({ length: 12 }, (_, index) => (
         <span
           key={index}
-          className="w-1.5 animate-pulse rounded-full bg-emerald-500"
+          className="w-1 rounded-full bg-brand-500 animate-pulse"
           style={{
-            height: `${8 + ((index * 7) % 24)}px`,
-            animationDelay: `${index * 80}ms`,
+            height: `${6 + ((index * 5) % 16)}px`,
+            opacity: 0.4 + (index % 3) * 0.2,
+            animationDelay: `${index * 60}ms`,
           }}
         />
       ))}

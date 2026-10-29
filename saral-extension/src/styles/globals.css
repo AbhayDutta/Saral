@@ -23,19 +23,144 @@
     U+2215, U+FEFF, U+FFFD;
 }
 
-:root {
-  font-family:
-    "Noto Sans Devanagari",
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
-  color-scheme: light;
+@theme {
+  --font-sans:
+    "Noto Sans Devanagari", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+  --color-brand-950: #022c22;
+
+  --animate-ripple: saral-ripple 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-shimmer: saral-shimmer 1.5s linear infinite;
+  --animate-pop: saral-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  background-color: #f8fafc;
+@keyframes saral-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes saral-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes saral-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    /* A larger root size keeps the whole product readable for its audience. */
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-white text-slate-900 antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+
+  button,
+  select,
+  input,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: #cbd5e1;
+  }
+}
+
+@layer components {
+  /* Surface — frameless, shadow-only depth */
+  .card {
+    @apply rounded-2xl bg-white shadow-[0_1px_4px_0_rgb(0_0_0/0.06)];
+  }
+
+  /* Primary action — full-width capable, solid brand */
+  .btn-primary {
+    @apply inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-brand-600 px-5 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-brand-700 active:scale-[0.98] active:bg-brand-800 focus-visible:outline-none disabled:pointer-events-none disabled:bg-slate-200 disabled:text-slate-400;
+  }
+
+  /* Secondary action — ghost with subtle border */
+  .btn-secondary {
+    @apply inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-[15px] font-semibold text-slate-700 transition-colors hover:bg-slate-50 active:scale-[0.98] active:bg-slate-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40;
+  }
+
+  /* Tertiary / icon-label ghost */
+  .btn-ghost {
+    @apply inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-[13px] font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40;
+  }
+
+  /* Form inputs */
+  .input-base {
+    @apply w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10;
+  }
+
+  /* Inline label chips */
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-600;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    @apply relative overflow-hidden rounded-xl bg-slate-100;
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.7),
+      transparent
+    );
+    animation: var(--animate-shimmer);
+  }
 }

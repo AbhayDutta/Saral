@@ -33,37 +33,35 @@ export function FormOverview({
   }
 
   return (
-    <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+    <section className="card px-4 py-3.5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
             {t('aboutForm', language)}
           </p>
-          <p className="mt-1 text-sm leading-relaxed text-slate-900">{purpose}</p>
-          <p className="mt-2 text-xs leading-relaxed text-slate-700">{requiredText}</p>
+          <p className="mt-1 text-[13px] leading-relaxed text-slate-800">{purpose}</p>
+          {required.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap gap-1">
+              {required.map((field) => (
+                <span key={field.id} className="chip">
+                  {field.label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         <button
           type="button"
           onClick={speak}
-          className="shrink-0 rounded-md border border-emerald-300 bg-white px-2.5 py-1 text-xs font-medium text-emerald-800 hover:bg-emerald-100"
+          className="btn-ghost shrink-0"
+          title={t('hearExplanation', language)}
         >
-          {t('hearExplanation', language)}
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+            <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z" />
+          </svg>
         </button>
       </div>
-
-      {required.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1">
-          {required.map((field) => (
-            <span
-              key={field.id}
-              className="rounded-full bg-white px-2 py-0.5 text-[11px] text-emerald-800"
-            >
-              {field.label}
-            </span>
-          ))}
-        </div>
-      )}
     </section>
   );
 }
