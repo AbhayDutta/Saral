@@ -11,11 +11,11 @@ export function TranscriptPanel({
   if (!transcript) return null;
 
   return (
-    <section className="rounded-lg bg-slate-50 p-3">
-      <h3 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+    <section className="rounded-xl bg-slate-50 px-4 py-3">
+      <h3 className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
         {t('transcript', language)}
       </h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-800">{transcript}</p>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-700">{transcript}</p>
     </section>
   );
 }

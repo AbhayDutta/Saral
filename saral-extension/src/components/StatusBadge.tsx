@@ -3,11 +3,11 @@ import { t } from '@/lib/i18n';
 import type { FieldStatus } from '@/lib/schema/types';
 
 const STYLES: Record<FieldStatus, string> = {
-  empty: 'bg-slate-100 text-slate-600',
-  filled: 'bg-emerald-100 text-emerald-700',
-  'needs-review': 'bg-amber-100 text-amber-700',
-  invalid: 'bg-red-100 text-red-700',
-  skipped: 'bg-slate-200 text-slate-600',
+  empty: 'text-slate-400',
+  filled: 'text-brand-600',
+  'needs-review': 'text-amber-500',
+  invalid: 'text-red-500',
+  skipped: 'text-slate-400',
 };
 
 const LABEL_KEYS: Record<FieldStatus, StringKey> = {
@@ -18,6 +18,14 @@ const LABEL_KEYS: Record<FieldStatus, StringKey> = {
   skipped: 'skipped',
 };
 
+const DOT_COLORS: Record<FieldStatus, string> = {
+  empty: 'bg-slate-200',
+  filled: 'bg-brand-500',
+  'needs-review': 'bg-amber-400',
+  invalid: 'bg-red-500',
+  skipped: 'bg-slate-300',
+};
+
 export function StatusBadge({
   status,
   language = 'en',
@@ -26,9 +34,8 @@ export function StatusBadge({
   language?: Language;
 }) {
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${STYLES[status]}`}
-    >
+    <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${STYLES[status]}`}>
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${DOT_COLORS[status]}`} aria-hidden="true" />
       {t(LABEL_KEYS[status], language)}
     </span>
   );
