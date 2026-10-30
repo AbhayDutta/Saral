@@ -66,24 +66,8 @@ export async function transcribe(audio: Blob, language = ''): Promise<string> {
   if (!response.ok) {
     let detail = '';
     try {
-      const errJson = (await response.json()) as {
-        detail?: string | { msg?: string }[] | Record<string, unknown>;
-        message?: string;
-        error?: string;
-      };
-      if (typeof errJson.detail === 'string') {
-        detail = errJson.detail;
-      } else if (Array.isArray(errJson.detail)) {
-        detail = errJson.detail
-          .map((item) => (typeof item === 'object' && item?.msg ? item.msg : JSON.stringify(item)))
-          .join('; ');
-      } else if (errJson.message) {
-        detail = errJson.message;
-      } else if (errJson.error) {
-        detail = errJson.error;
-      } else {
-        detail = JSON.stringify(errJson);
-      }
+      const errJson = (await response.json()) as unknown;
+      detail = extractErrorDetail(errJson);
     } catch {
       detail = (await response.text()).slice(0, 300);
     }
@@ -96,4 +80,66 @@ export async function transcribe(audio: Blob, language = ''): Promise<string> {
   if (!text) throw new AppError('parse', 'Sarvam AI returned an empty transcript.');
 
   return text;
+}
+
+export function extractErrorDetail(data: unknown): string {
+  if (!data) return '';
+  if (typeof data === 'string') return data;
+  if (typeof data !== 'object') return String(data);
+
+  const obj = data as Record<string, unknown>;
+
+  // 1. Check `detail` (FastAPI / Pydantic validation errors)
+  if (typeof obj.detail === 'string') return obj.detail;
+  if (Array.isArray(obj.detail)) {
+    const messages = obj.detail
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          const rec = item as Record<string, unknown>;
+          return (rec.msg || rec.message || JSON.stringify(rec)) as string;
+        }
+        return String(item);
+      })
+      .filter(Boolean);
+    if (messages.length > 0) return messages.join('; ');
+  }
+  if (obj.detail && typeof obj.detail === 'object') {
+    const d = obj.detail as Record<string, unknown>;
+    if (typeof d.message === 'string') return d.message;
+    if (typeof d.msg === 'string') return d.msg;
+  }
+
+  // 2. Check `error` or `errors` (Sarvam / REST API envelopes)
+  const err = obj.error ?? obj.errors;
+  if (typeof err === 'string') return err;
+  if (Array.isArray(err)) {
+    const messages = err
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          const rec = item as Record<string, unknown>;
+          return (rec.message || rec.msg || rec.detail || JSON.stringify(rec)) as string;
+        }
+        return String(item);
+      })
+      .filter(Boolean);
+    if (messages.length > 0) return messages.join('; ');
+  }
+  if (err && typeof err === 'object') {
+    const errObj = err as Record<string, unknown>;
+    if (typeof errObj.message === 'string') return errObj.message;
+    if (typeof errObj.msg === 'string') return errObj.msg;
+    if (typeof errObj.detail === 'string') return errObj.detail;
+    return JSON.stringify(errObj);
+  }
+
+  // 3. Check `message`
+  if (typeof obj.message === 'string') return obj.message;
+
+  try {
+    return JSON.stringify(obj);
+  } catch {
+    return String(obj);
+  }
 }

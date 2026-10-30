@@ -100,4 +100,47 @@ describe('Sarvam AI STT (Saaras)', () => {
       'Sarvam AI (401): Invalid subscription key',
     );
   });
+
+  it('properly extracts message when Sarvam returns nested error object or array instead of [object Object]', async () => {
+    vi.spyOn(storage, 'getSettings').mockResolvedValue({
+      sarvamApiKey: 'test-sarvam-key',
+      openrouterApiKey: 'test-key',
+      defaultLanguage: 'auto',
+      transcriptionModel: 'saaras:v4',
+      extractionModel: 'google/gemini-2.5-flash',
+      fallbackModel: 'meta-llama/llama-3.3-70b-instruct',
+    });
+
+    // Test with Sarvam { error: { message: '...' } }
+    let fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      json: async () => ({
+        error: { code: 'invalid_request_error', message: 'Audio duration cannot exceed 30 seconds' },
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const dummyBlob = new Blob(['audio data'], { type: 'audio/webm' });
+    await expect(transcribe(dummyBlob, 'hi')).rejects.toThrowError(
+      'Sarvam AI (400): Audio duration cannot exceed 30 seconds',
+    );
+
+    // Test with array of error objects: { error: [{ message: '...' }] }
+    fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      json: async () => ({
+        error: [
+          { message: 'Audio duration cannot exceed 30 seconds' },
+          { message: 'File format warning' },
+        ],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(transcribe(dummyBlob, 'hi')).rejects.toThrowError(
+      'Sarvam AI (400): Audio duration cannot exceed 30 seconds; File format warning',
+    );
+  });
 });

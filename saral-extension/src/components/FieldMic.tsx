@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AudioRecorder, isPermissionError, openMicPermissionTab } from '@/lib/audio';
 import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
 import { CloseIcon, MicIcon, StopIcon } from './Icons';
+
+/** Sarvam AI synchronous STT hard limit is 30 seconds. Stop at 29s to be safe. */
+const MAX_RECORDING_MS = 29000;
 
 export function FieldMic({
   onRecorded,
@@ -17,9 +20,37 @@ export function FieldMic({
   variant?: 'subtle' | 'primary';
 }) {
   const recorder = useRef<AudioRecorder | null>(null);
+  const onRecordedRef = useRef(onRecorded);
+  onRecordedRef.current = onRecorded;
+
   const [recording, setRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [needsPermission, setNeedsPermission] = useState(false);
+
+  const stopRecording = useCallback(async (): Promise<void> => {
+    if (!recorder.current) return;
+    try {
+      const activeRecorder = recorder.current;
+      recorder.current = null;
+      setRecording(false);
+      const result = await activeRecorder.stop();
+      if (result) onRecordedRef.current(result.blob);
+    } catch (caught) {
+      setRecording(false);
+      recorder.current = null;
+      setError(t('micError', language));
+      setNeedsPermission(isPermissionError(caught));
+      console.warn(caught);
+    }
+  }, [language]);
+
+  useEffect(() => {
+    if (!recording) return;
+    const timer = window.setTimeout(() => {
+      void stopRecording();
+    }, MAX_RECORDING_MS);
+    return () => window.clearTimeout(timer);
+  }, [recording, stopRecording]);
 
   useEffect(() => () => recorder.current?.cancel(), []);
 
@@ -30,10 +61,7 @@ export function FieldMic({
 
     try {
       if (recording) {
-        const result = await recorder.current?.stop();
-        recorder.current = null;
-        setRecording(false);
-        if (result) onRecorded(result.blob);
+        await stopRecording();
         return;
       }
 

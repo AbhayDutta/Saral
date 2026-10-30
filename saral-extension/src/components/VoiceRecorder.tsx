@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { AudioRecorder, isPermissionError, openMicPermissionTab } from '@/lib/audio';
 import type { Recording } from '@/lib/audio';
@@ -6,6 +6,9 @@ import type { Language } from '@/lib/i18n';
 import { t } from '@/lib/i18n';
 import { Banner } from './Banner';
 import { MicIcon, StopIcon } from './Icons';
+
+/** Sarvam AI synchronous STT hard limit is 30 seconds. Stop at 29s to be safe. */
+const MAX_RECORDING_SECONDS = 29;
 
 interface VoiceRecorderProps {
   language: Language;
@@ -15,16 +18,45 @@ interface VoiceRecorderProps {
 
 export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceRecorderProps) {
   const recorder = useRef<AudioRecorder | null>(null);
+  const onRecordedRef = useRef(onRecorded);
+  onRecordedRef.current = onRecorded;
+
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [needsPermission, setNeedsPermission] = useState(false);
 
+  const stopRecording = useCallback(async (): Promise<void> => {
+    if (!recorder.current) return;
+    try {
+      const activeRecorder = recorder.current;
+      recorder.current = null;
+      setRecording(false);
+      setSeconds(0);
+      const result = await activeRecorder.stop();
+      if (result) await onRecordedRef.current(result);
+    } catch (caught) {
+      setRecording(false);
+      recorder.current = null;
+      setError(t('micError', language));
+      setNeedsPermission(isPermissionError(caught));
+      console.warn(caught);
+    }
+  }, [language]);
+
   useEffect(() => {
     if (!recording) return;
-    const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
+    const timer = window.setInterval(() => {
+      setSeconds((value) => {
+        if (value >= MAX_RECORDING_SECONDS) {
+          void stopRecording();
+          return value;
+        }
+        return value + 1;
+      });
+    }, 1000);
     return () => window.clearInterval(timer);
-  }, [recording]);
+  }, [recording, stopRecording]);
 
   useEffect(() => () => recorder.current?.cancel(), []);
 
@@ -35,11 +67,7 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
 
     try {
       if (recording) {
-        const result = await recorder.current?.stop();
-        recorder.current = null;
-        setRecording(false);
-        setSeconds(0);
-        if (result) await onRecorded(result);
+        await stopRecording();
         return;
       }
 
@@ -91,7 +119,13 @@ export function VoiceRecorder({ language, disabled = false, onRecorded }: VoiceR
             <p className="flex items-center gap-2 text-[14px] font-semibold text-ink-900">
               <span aria-hidden="true" className="rec-dot h-1.5 w-1.5 rounded-full bg-red-500" />
               {t('listening', language)}
-              <span className="font-medium tabular-nums text-ink-500">{formatTime(seconds)}</span>
+              <span
+                className={`font-medium tabular-nums ${
+                  seconds >= 25 ? 'font-semibold text-amber-600' : 'text-ink-500'
+                }`}
+              >
+                {formatTime(seconds)} / 0:30
+              </span>
             </p>
             <Waveform />
           </>
